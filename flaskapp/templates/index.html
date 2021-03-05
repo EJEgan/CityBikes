@@ -31,6 +31,14 @@ function initMap() {
     zoom: 13,
     });
 
+  // adding the markers
+  data.forEach(station => {
+    new google.maps.Marker({
+      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
+      map: map,
+    });
+  });
+
     }).catch(err => {
       console.log("OOPS!", err);
   })
