@@ -31,11 +31,23 @@ function initMap() {
     zoom: 13,
     });
 
-  // adding the markers
+  // iterating over each station
   data.forEach(station => {
-    new google.maps.Marker({
+
+    // info window for each marker
+    const infowindow = new google.maps.InfoWindow({
+      content: station.name,
+    });
+
+    // adding the markers
+    const marker = new google.maps.Marker({
       position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
       map: map,
+    });
+
+    // event handler for click
+    marker.addListener("click", () => {
+      infowindow.open(map, marker);
     });
   });
 
