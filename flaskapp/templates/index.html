@@ -21,10 +21,19 @@
 let map;
 
 function initMap() {
+
+  // fetching the static data
   fetch("/stations").then(response => {
       return response.json();
       }).then(data => {
       console.log("data ", data);
+
+  // fetching the available bikes data
+  fetch("/bikes").then(bikeResponse => {
+      return bikeResponse.json();
+      }).then(bikeData => {
+      console.log("bikeData ", bikeData);
+
 
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 53.349804, lng: -6.260310 },
@@ -34,9 +43,17 @@ function initMap() {
   // iterating over each station
   data.forEach(station => {
 
+    var contentString;
+    // iterating over the availability data and building the content for the info window
+    bikeData.forEach(bikeStation => {
+      if (station.name == bikeStation.StationName) {
+        contentString = `${bikeStation.StationName} Avail Stands: ${bikeStation.AvailableBikeStands} Avail Bikes: ${bikeStation.AvailableBikes}`;
+        }
+      });
+
     // info window for each marker
     const infowindow = new google.maps.InfoWindow({
-      content: station.name,
+      content: contentString,
     });
 
     // adding the markers
@@ -53,7 +70,8 @@ function initMap() {
 
     }).catch(err => {
       console.log("OOPS!", err);
-  })
+  });
+  });
 }
   </script>
 

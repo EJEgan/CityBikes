@@ -33,6 +33,26 @@ def stations():
     #print(df.to_json(orient='records'))
     return df.to_json(orient='records')
 
+
+# '/bikes' is the route fetched in initMap() function on index.html page, returns AvailableBikes from database as JSON
+@app.route("/bikes")
+def bikes():
+
+    URI = "dublinbikes.chj6z1a17hdc.us-east-1.rds.amazonaws.com"
+    PORT = "3306"
+    DB = "DublinBikes"
+    USER = "admin"
+    PASSWORD = "Aws72gene!"
+
+    engine = create_engine("mysql+mysqlconnector://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
+
+    print("Connected")
+    df = pd.read_sql_table("AvailableBikes", engine)
+    #print(df.head())
+    #print(df.to_json(orient='records'))
+    return df.to_json(orient='records')
+
+
 # Just a sample static page for proof of concept
 @app.route("/about")
 def about():
