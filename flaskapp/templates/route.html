@@ -6,7 +6,48 @@
 </head>
 <body>
 
-<p>Fancy route planner coming soon!</p>
+<h3>Select station:</h3>
+
+<label for="start">Start:</label>
+<select id="start"></select>
+
+<label for="dest">Destination:</label>
+<select id="dest"></select>
+
+<br><br>
+
+<button id="submitRoute" onclick="displayRoute()">Submit</button>
+
+<p id="placeholder"></p>
+
+<script>
+
+var stationsList = "";
+
+// fetching the static data
+fetch("/stations").then(response => {
+    return response.json();
+    }).then(data => {
+    console.log("data ", data);
+
+  // iterating over each station
+  data.forEach(station => {
+    stationsList += "<option value='{lat:" + station.latitude + ", lng:" + station.longitude + "}'>" + station.address + "</option>";
+    });
+
+   document.getElementById("start").innerHTML = stationsList;
+   document.getElementById("dest").innerHTML = stationsList;
+
+});
+
+function displayRoute() {
+    var startPos = document.getElementById("start").value;
+    var destPos = document.getElementById("dest").value;
+
+    document.getElementById("placeholder").innerHTML = `Show route between ${startPos} and ${destPos}.`;
+    return;
+}
+</script>
 
 </body>
 </html>
