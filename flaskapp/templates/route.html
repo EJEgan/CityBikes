@@ -19,8 +19,18 @@
 <button id="submitRoute" onclick="displayRoute()">Submit</button>
 
 <p id="placeholder"></p>
+<div id="map" style="height: 800px"></div>
 
 <script>
+
+let map;
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 53.349804, lng: -6.260310 },
+    zoom: 13,
+    });
+}
 
 var stationsList = "";
 
@@ -47,7 +57,14 @@ function displayRoute() {
     document.getElementById("placeholder").innerHTML = `Show route between ${startPos} and ${destPos}.`;
     return;
 }
+
 </script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoy1x8NH5BZFhA86GFgJk7tFyrnPhGbhw&callback=initMap&libraries=&v=weekly"
+      async>
+</script>
+
 
 </body>
 </html>
