@@ -45,6 +45,17 @@ function initMap() {
   document.getElementById("start").addEventListener('change', onChange);
   document.getElementById("dest").addEventListener('change', onChange);
 
+  var stationsList = "";
+
+  // iterating over each station
+  data.forEach(station => {
+    stationsList += "<option value='" + station.latitude + "," + station.longitude + "'>" + station.address + "</option>";
+    });
+
+  // filling in the stations drop downs
+  document.getElementById("start").innerHTML = stationsList;
+  document.getElementById("dest").innerHTML = stationsList;
+
   // iterating over each station
   data.forEach(station => {
 
@@ -58,24 +69,6 @@ function initMap() {
    });
 }
 
-var stationsList = "";
-
-// fetching the static data
-fetch("/stations").then(response => {
-    return response.json();
-    }).then(data => {
-    console.log("data ", data);
-
-  // iterating over each station
-  data.forEach(station => {
-    stationsList += "<option value='" + station.latitude + "," + station.longitude + "'>" + station.address + "</option>";
-    });
-
-  // filling in the stations drop downs
-  document.getElementById("start").innerHTML = stationsList;
-  document.getElementById("dest").innerHTML = stationsList;
-
-});
 
 // function to display the selected route on the map
 function displayRoute(directionsService, directionsRenderer) {
