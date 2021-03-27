@@ -3,8 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Bike Curious Route Planner - In Development</title>
+
+    <link href="{{ url_for('static', filename='routestyle.css') }}" type="text/css" rel="stylesheet">
 </head>
 <body>
+
+<!-- divs for page navigation -->
+<div id="navigation">
+  <div id="homenav">
+    <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+  </div>
+
+  <div id="routenav">
+    <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>
+  </div>
+</div>
 
 <h3>Select station:</h3>
 

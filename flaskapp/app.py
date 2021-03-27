@@ -9,11 +9,10 @@ import json
 # Followed Aonghus precisely as I could, so app is the Flask name
 app = Flask(__name__)
 
-# Homepage on first loading - dictionary with our names a leftover from stage one of 'hello world'-ing, delete whenever:
+# Homepage on first loading
 @app.route("/")
 def homepage():
-    d = {'name': 'David, Aine, and Eugene'}
-    return render_template("index.html", **d)
+    return render_template("index.html")
 
 # Route planner page
 @app.route("/route")
