@@ -17,6 +17,11 @@ def homepage():
     d = {'name': 'David, Aine, and Eugene'}
     return render_template("index.html", **d)
 
+# Route planner page
+@app.route("/route")
+def route_planner():
+    return render_template("route.html")
+
 # '/stations' is the route fetched in initMap() function on index.html page, returns StaticData from database as JSON
 @app.route("/stations")
 def stations():
