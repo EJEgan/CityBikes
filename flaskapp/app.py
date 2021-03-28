@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 import pandas as pd
 import requests
 import json
+from datetime import datetime
+from os import path
 
 # Followed Aonghus precisely as I could, so app is the Flask name
 app = Flask(__name__)
@@ -51,6 +53,20 @@ def bikes():
     #print(df.head())
     #print(df.to_json(orient='records'))
     return df.to_json(orient='records')
+
+@app.route("/charts/<int:StationNumber>")
+def get_occupancy(StationNumber):
+    # get basepath of this file
+    basepath = path.dirname(__file__)
+    # describe route out of directory to stored dataFrame
+    filepath = path.abspath(path.join(basepath, "..", "bikesDataframe.csv"))
+
+    # read in dataframe
+    df = pd.read_csv(filepath)
+    df['DateTime'] = pd.to_datetime(df['DateTime'])
+    station_df = df.loc[df['StationNumber'] == StationNumber]
+    station_df = station_df.set_index('DateTime').resample('1d').mean()
+    return station_df.to_json(orient='records')
 
 
 # Just a sample static page for proof of concept
