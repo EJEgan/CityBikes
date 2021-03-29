@@ -59,8 +59,8 @@ def bikes():
     #print(df.to_json(orient='records'))
     return df.to_json(orient='records')
 
-@app.route("/charts/<int:StationNumber>")
-def get_occupancy(StationNumber):
+@app.route("/chartW/<int:StationNumber>")
+def chartWeekly(StationNumber):
     # get basepath of this file
     basepath = path.dirname(__file__)
     # describe route out of directory to stored dataFrame
@@ -69,9 +69,31 @@ def get_occupancy(StationNumber):
     # read in dataframe
     df = pd.read_csv(filepath)
     df['DateTime'] = pd.to_datetime(df['DateTime'])
+
     station_df = df.loc[df['StationNumber'] == StationNumber]
+    week_df = station_df.groupby(['DayOfWeek']).mean()
+    week_df['DayOfWeek'] = week_df.index
     station_df = station_df.set_index('DateTime').resample('1d').mean()
-    return station_df.to_json(orient='records')
+    station_df['DateTime'] = station_df.index
+    return week_df.to_json(orient='records')
+
+@app.route("/chartH/<int:StationNumber>")
+def chartHourly(StationNumber):
+    # get basepath of this file
+    basepath = path.dirname(__file__)
+    # describe route out of directory to stored dataFrame
+    filepath = path.abspath(path.join(basepath, "..", "bikesDataframe.csv"))
+
+    # read in dataframe
+    df = pd.read_csv(filepath)
+    df['DateTime'] = pd.to_datetime(df['DateTime'])
+
+    day_number = datetime.today().weekday()  # produces an int value for day of the week
+    station_df = df.loc[(df['StationNumber'] == StationNumber) & (df['DayOfWeek'] == day_number)]
+    station_df = station_df.set_index('DateTime').resample('1h').mean()
+    hourly_df = station_df.groupby(station_df.index.hour).mean()
+    hourly_df['Hour'] = hourly_df.index
+    return hourly_df.to_json(orient='records')
 
 
 # Just a sample static page for proof of concept
