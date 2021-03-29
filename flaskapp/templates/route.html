@@ -3,8 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Bike Curious Route Planner - In Development</title>
+
+    <link href="{{ url_for('static', filename='routestyle.css') }}" type="text/css" rel="stylesheet">
 </head>
 <body>
+
+<!-- divs for page navigation -->
+<div id="navigation">
+  <div id="homenav">
+    <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+  </div>
+
+  <div id="routenav">
+    <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>
+  </div>
+</div>
 
 <h3>Select station:</h3>
 
@@ -45,6 +58,17 @@ function initMap() {
   document.getElementById("start").addEventListener('change', onChange);
   document.getElementById("dest").addEventListener('change', onChange);
 
+  var stationsList = "";
+
+  // iterating over each station
+  data.forEach(station => {
+    stationsList += "<option value='" + station.latitude + "," + station.longitude + "'>" + station.address + "</option>";
+    });
+
+  // filling in the stations drop downs
+  document.getElementById("start").innerHTML = stationsList;
+  document.getElementById("dest").innerHTML = stationsList;
+
   // iterating over each station
   data.forEach(station => {
 
@@ -58,24 +82,6 @@ function initMap() {
    });
 }
 
-var stationsList = "";
-
-// fetching the static data
-fetch("/stations").then(response => {
-    return response.json();
-    }).then(data => {
-    console.log("data ", data);
-
-  // iterating over each station
-  data.forEach(station => {
-    stationsList += "<option value='" + station.latitude + "," + station.longitude + "'>" + station.address + "</option>";
-    });
-
-  // filling in the stations drop downs
-  document.getElementById("start").innerHTML = stationsList;
-  document.getElementById("dest").innerHTML = stationsList;
-
-});
 
 // function to display the selected route on the map
 function displayRoute(directionsService, directionsRenderer) {

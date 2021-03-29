@@ -26,7 +26,17 @@
 </head>
 
 <body>
-  <p> Hello {{ name }}</p>
+  <!-- divs for page navigation -->
+  <div id="navigation">
+    <div id="homenav">
+      <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+    </div>
+
+    <div id="routenav">
+      <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>
+    </div>
+  </div>
+
 
   <div id="map"></div>
   <div id="chart1"></div>
