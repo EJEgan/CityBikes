@@ -21,10 +21,10 @@ print("Connected")
 cursor = mydb.cursor()
 
 #Pandas read sql query
-sql_select_Query = pd.read_sql_query("SELECT DayOfWeek, StationNumber, Time, Date, AvailableBikes FROM DublinBikes.LiveHistoricalData", mydb)
+sql_select_Query = pd.read_sql_query("SELECT DayOfWeek, StationNumber, Time, Date, AvailableBikes, AvailableBikeStands FROM DublinBikes.LiveHistoricalData", mydb)
 
 #Create a dataframe with all of the rows fetches in the sql query
-df = pd.DataFrame(sql_select_Query, columns=['DayOfWeek', 'StationNumber', 'Time', 'Date', 'AvailableBikes'])
+df = pd.DataFrame(sql_select_Query, columns=['DayOfWeek', 'StationNumber', 'Time', 'Date', 'AvailableBikes', 'AvailableBikeStands'])
 
 print(df.head(3))
 # Convert time stored as integer to pandas timedelta
@@ -44,7 +44,7 @@ df['DateTime'] = pd.to_datetime(df['DateTime'])
 print("3 \n", df.head(3))
 
 # Select necessary columns to take forward
-df_w_datetime = df[['DayOfWeek', 'StationNumber', 'AvailableBikes', 'DateTime']]
+df_w_datetime = df[['DayOfWeek', 'StationNumber', 'AvailableBikes', 'AvailableBikeStands', 'DateTime']]
 
 # Save to csv file (smaller than JSON file)
 csv = df_w_datetime.to_csv("bikesDataframe.csv", index = False)
