@@ -59,6 +59,7 @@ def about():
     return app.send_static_file("about.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
+	app.run(host='0.0.0.0', debug=True)
+#Default port is 5000
+#Optional paramater debug=True removed
 
