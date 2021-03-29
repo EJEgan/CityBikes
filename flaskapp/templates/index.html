@@ -10,13 +10,27 @@
 
   <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        function initCharts(){
+            // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(initMap);
+        }
+      
+    </script>
+    
 </head>
 
 <body>
   <p> Hello {{ name }}</p>
 
   <div id="map"></div>
-
+  <div id="chart1"></div>
+    <div id="chart2"></div>
 <script>
 let map;
 
@@ -65,6 +79,9 @@ function initMap() {
     // event handler for click
     marker.addListener("click", () => {
       infowindow.open(map, marker);
+        chartWeekly(station.number);
+        console.log('now to chart hourly with' + station.number);
+        chartHourly(station.number);
     });
   });
 
@@ -73,10 +90,57 @@ function initMap() {
   });
   });
 }
+    
+function chartWeekly(StationNumber){
+    // Called when user clicks on marker
+    // Draws charts at bottom of page
+    fetch("/chartW/" + StationNumber).then(response => {
+        return response.json();
+    }).then(data =>{
+            console.log(data);
+    
+        var options = {
+            'title': 'Available Bikes',
+            'width': 300, 'height': 300
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart1'));
+        var chartData = new google.visualization.DataTable();
+        chartData.addColumn('number', "Day Of Week");
+        chartData.addColumn('number', "Bike Availability");
+        data.forEach(y =>{
+            chartData.addRow([y.DayOfWeek, y.AvailableBikes]);
+        })
+        chart.draw(chartData, options);
+            });
+}
+    
+function chartHourly(StationNumber){
+        // Called when user clicks on marker
+    // Draws charts at bottom of page
+    fetch("/chartH/" + StationNumber).then(response => {
+        return response.json();
+    }).then(data =>{
+            console.log(data);
+    
+        var options = {
+            'title': 'Available Bikes',
+            'width': 300, 'height': 300
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart2'));
+        var chartData = new google.visualization.DataTable();
+        chartData.addColumn('number', "Day Of Week");
+        chartData.addColumn('number', "Bike Availability");
+        data.forEach(y =>{
+            chartData.addRow([y.Hour, y.AvailableBikes]);
+        })
+        chart.draw(chartData, options);
+            });
+    
+}
   </script>
 
  <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNMDKUUBsPVblrArwU5AIKEt8ZirRosf4&callback=initMap&libraries=&v=weekly"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNMDKUUBsPVblrArwU5AIKEt8ZirRosf4&callback=initCharts&libraries=&v=weekly"
       async>
 </script>
 
