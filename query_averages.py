@@ -26,7 +26,6 @@ sql_select_Query = pd.read_sql_query("SELECT DayOfWeek, StationNumber, Time, Dat
 #Create a dataframe with all of the rows fetches in the sql query
 df = pd.DataFrame(sql_select_Query, columns=['DayOfWeek', 'StationNumber', 'Time', 'Date', 'AvailableBikes', 'AvailableBikeStands'])
 
-print(df.head(3))
 # Convert time stored as integer to pandas timedelta
 dt = df['Time']
 df['NumericTime'] =(pd.to_timedelta(dt//100, unit='H') + pd.to_timedelta(dt % 100, unit = 'T'))
@@ -34,14 +33,11 @@ df['NumericTime'] =(pd.to_timedelta(dt//100, unit='H') + pd.to_timedelta(dt % 10
 # Remove timedelta prefix so that strings can be combined to form date time
 df['NumericTime'] = df['NumericTime'].astype("string")
 df['NumericTime'] = df['NumericTime'].str.slice(start=6, stop=15)
-print("1 \n", df.head(3))
 
 # Recategorize date as a string, combine with time, create datetime column
 df['Date'] = df['Date'].astype("string")
 df['DateTime'] = df['Date'] + df['NumericTime']
-print("2 \n", df.head(3))
 df['DateTime'] = pd.to_datetime(df['DateTime'])
-print("3 \n", df.head(3))
 
 # Select necessary columns to take forward
 df_w_datetime = df[['DayOfWeek', 'StationNumber', 'AvailableBikes', 'AvailableBikeStands', 'DateTime']]
