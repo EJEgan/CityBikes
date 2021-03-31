@@ -9,6 +9,8 @@
   <meta name="author" content="BikeCurious">
 
   <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Space+Grotesk:wght@300&display=swap" rel="stylesheet">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -28,13 +30,27 @@
 <body>
   <!-- divs for page navigation -->
   <div id="navigation">
+      <img id="logo" src="static/images/white_grey_dublinbikes.png">
+
     <div id="homenav">
       <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
     </div>
 
     <div id="routenav">
-      <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>
+      <a id="routelink" href="{{ url_for('route_planner') }}">Start your journey</a>
     </div>
+  </div>
+
+  <header class="header">
+      <section class="hero-header-text">
+    <h1>Explore Dublin's Fair City</h1>
+    <h2>By Bike</h2>
+      </section>
+  </header>
+
+
+  <div id="select_instruct">
+      <h3>Select a station to view bike and stand availability:</h3>
   </div>
 
 
@@ -153,6 +169,10 @@ function chartHourly(StationNumber){
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNMDKUUBsPVblrArwU5AIKEt8ZirRosf4&callback=initCharts&libraries=&v=weekly"
       async>
 </script>
+
+
+
+
 
 </body>
 </html>
