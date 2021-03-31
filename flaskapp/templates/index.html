@@ -10,8 +10,9 @@
 
   <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script type="text/javascript">
 
         function initCharts(){
             // Load the Visualization API and the corechart package.
@@ -21,7 +22,7 @@
       google.charts.setOnLoadCallback(initMap);
         }
       
-    </script>
+   </script>
     
 </head>
 
@@ -39,8 +40,10 @@
 
 
   <div id="map"></div>
-  <div id="chart1"></div>
-    <div id="chart2"></div>
+  <div id="chart1"><canvas id="canvasWeek"></canvas></div>
+    <div id="chart2"> <canvas id="canvasHour"></canvas></div>
+    
+    
 <script>
 let map;
 
@@ -100,7 +103,21 @@ function initMap() {
   });
   });
 }
-    
+
+function getDayString(number){
+        
+        var DaysOfWeek = new Array(7);
+        DaysOfWeek[0] = "Sunday";
+        DaysOfWeek[1] = "Monday";
+        DaysOfWeek[2] = "Tuesday";
+        DaysOfWeek[3] = "Wednesday";
+        DaysOfWeek[4] = "Thursday";
+        DaysOfWeek[5] = "Friday";
+        DaysOfWeek[6] = "Saturday";
+        
+        return DaysOfWeek[number];
+}
+
 function chartWeekly(StationNumber){
     // Called when user clicks on marker
     // Draws charts at bottom of page
@@ -108,20 +125,48 @@ function chartWeekly(StationNumber){
         return response.json();
     }).then(data =>{
             console.log(data);
-    
-        var options = {
-            'title': 'Available Bikes',
-            'width': 300, 'height': 300
-        };
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart1'));
-        var chartData = new google.visualization.DataTable();
-        chartData.addColumn('number', "Day Of Week");
-        chartData.addColumn('number', "Bike Availability");
-        data.forEach(y =>{
-            chartData.addRow([y.DayOfWeek, y.AvailableBikes]);
+            
+        // Chartist
+        // Set up lists to capture bikes & days
+        var days = [];
+        var bikes = [];
+        data.forEach(x => {
+            days.push(x.DayOfWeek); 
+            bikes.push(x.AvailableBikes);
         })
-        chart.draw(chartData, options);
-            });
+        // Get the string for each day from its int value
+        days.forEach((value, index) => {
+            days[index] = getDayString(value);
+        })
+        console.log(days);
+        console.log(bikes);
+        // Draw chart
+        var ctx = document.getElementById("canvasHour").getContext('2d');
+        var canvas = new Chart(ctx, {
+            type: 'bar',
+            
+            data: {
+                labels: days,
+                datasets: [{
+                    label: "Daily Average Availability",
+                    backgroundColor: 'rgb(102, 179, 255)',
+                    borderColor: 'rgb(0, 128, 128)',
+                    data: bikes
+                }]
+            },
+            
+            options: {
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(255, 99, 132)'
+                    }
+                }
+            }
+            
+        });
+    
+    });
 }
     
 function chartHourly(StationNumber){
@@ -132,19 +177,63 @@ function chartHourly(StationNumber){
     }).then(data =>{
             console.log(data);
     
-        var options = {
-            'title': 'Available Bikes',
-            'width': 300, 'height': 300
-        };
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart2'));
-        var chartData = new google.visualization.DataTable();
-        chartData.addColumn('number', "Day Of Week");
-        chartData.addColumn('number', "Bike Availability");
-        data.forEach(y =>{
-            chartData.addRow([y.Hour, y.AvailableBikes]);
+        // Chartist
+        var today = new Date();
+        var todayNum = today.getDay();
+        //Calls getDayString to return word for day of week
+        var dayString = getDayString(todayNum);
+        
+        // Set up lists to catch hours & bikes
+        // Will be formatted in such a way as to work 'round the bend', i.e. excluding our downtime 1-6am
+        var lateHours = [];
+        var earlyHours = [];
+        var lateBikes = [];
+        var earlyBikes = []
+        data.forEach(x => {
+         if (x.Hour <= 1){
+             earlyHours.push(x.Hour);
+             earlyBikes.push(x.AvailableBikes);
+        }else if (x.Hour > 1 && x.Hour < 6){
+            }
+            //pass
+            else{
+            lateHours.push(x.Hour); 
+            lateBikes.push(x.AvailableBikes);
+            }
         })
-        chart.draw(chartData, options);
-            });
+        // finalize variables into hours and bikes in right order
+        var hours = lateHours.concat(earlyHours);
+        var bikes = lateBikes.concat(earlyBikes);
+        console.log(hours);
+        console.log(bikes);
+        // Chartist draw
+        var ctx = document.getElementById("canvasWeek").getContext('2d');
+        var canvas = new Chart(ctx, {
+            type: 'line',
+            
+            data: {
+                labels: hours,
+                datasets: [{
+                    label: "Average Bike Availability on a " + dayString,
+                    backgroundColor: 'rgb(102, 179, 255)',
+                    borderColor: 'rgb(0, 128, 128)',
+                    data: bikes
+                }]
+            },
+            
+            options: {
+                
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(255, 99, 132)'
+                    }
+                }
+            }
+            
+        });
+    
+    });
     
 }
   </script>
