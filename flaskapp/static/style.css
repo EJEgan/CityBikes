@@ -1,11 +1,6 @@
 /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-#map {
-  height: 70%;
-  width: 90%;
-  margin: auto;
-  border: 6px solid #C2EABA;
-}
+
 
 /* Optional: Makes the sample page fill the window. */
 html,
@@ -13,28 +8,117 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: 'Lato', sans-serif;
 }
 
+
 #navigation {
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
-  height: auto;
-  width: 100%;
+    background-color: #166974;
+    padding: 4rem 0 4rem 0;
+    height: auto;
+    width: 100%;
+    color:white;
+}
+
+#logo{
+    height: 6rem;
+/*
+    width: 15%;
+*/
+    margin: -2rem 0 0 2rem;
 }
 
 #homenav,
-#routenav,
-a {
-  display: block;
-  float: left;
-  text-align: center;
-  background-color: white;
-  text-decoration: none;
+#routenav {
+  /*display: block;*/
+/*  text-align: right;*/
+  float: right;
+  background-color: #166974;
+  height:2rem;
+  color: white;
   overflow: hidden;
+  padding: 0 2rem 0 1rem;
 }
 
-#homenav {
+#homelink, #routelink {
+    color:white;
+    font-size: 2rem;
+    text-decoration: none;
+}
+
+
+#homelink,
+#routelink > a{
+    color:white;
+    text-decoration: none;
+}
+
+#homenav, #routenav > a:hover{
+    color:grey;
+}
+
+#map {
+  height: 70%;
+  width: 90%;
+  margin: 3rem;
+  border: 6px solid z;
+}
+
+
+
+/* HEADER */
+
+.hero-header-text{
+    color:white;
+    text-align: center;
+    margin: 20rem;
+    font-size: 40px;
+}
+
+header {
+    height: 600px;
+    width: 100%;
+    background: black;
+    overflow: hidden;
+    background: #C33764;  /* fallback colour. Make sure this is just one solid colour. */
+/*
+    background: -webkit-linear-gradient(rgba(2, 0, 36, 100), rgba(0, 212, 255, 100)), url('images/dimitry-anikin-XI1yvtqKjl8-unsplash_cropped.jpg');
+*/
+    background: linear-gradient(rgba(0, 212, 255, 0.2), rgba(2, 0, 36, 0.8)), url('images/dimitry-anikin-XI1yvtqKjl8-unsplash_cropped.jpg'); }
+
+
+
+
+
+#select_instruct{
+    margin: 3rem;
+    width: 90%;
+    padding:1rem 1rem 0.5rem 1rem;
+    font-size: 2rem;
+/*
+    background-color:#b2b2b0;
+*/
+    color:#166974;
+    /*opacity: 0.5;*/
+
+}
+
+
+
+.h3{
+    color: #166974;
+    opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+/*#homenav {
   height: 5%;
   width: 10%;
   border: 6px solid #FF5A5F;
@@ -48,9 +132,9 @@ a {
   border: 6px solid #5398BE;
   font-size: 150%;
   margin: 1%;
-}
+}*/
 
-#homenav:hover,
+/*#homenav:hover,
 #routenav:hover,
 a:hover {
   background-color: lightgray;
@@ -68,4 +152,4 @@ a {
 
 #routelink {
   color: #5398BE;
-}
+}*/
