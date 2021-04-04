@@ -29,6 +29,7 @@ body {
 }
 
 #homenav,
+#infonav,
 #routenav {
   /*display: block;*/
 /*  text-align: right;*/
@@ -40,20 +41,21 @@ body {
   padding: 0 2rem 0 1rem;
 }
 
-#homelink, #routelink {
+#homelink, #infolink, #routelink {
     color:white;
     font-size: 2rem;
     text-decoration: none;
 }
 
 
-#homelink,
+#homelink > a,
+#infolink > a,
 #routelink > a{
     color:white;
     text-decoration: none;
 }
 
-#homenav, #routenav > a:hover{
+#homenav > a:hover, #infonav > a:hover, #routenav > a:hover{
     color:grey;
 }
 

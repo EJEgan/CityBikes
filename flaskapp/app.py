@@ -16,6 +16,11 @@ app = Flask(__name__)
 def homepage():
     return render_template("index.html")
 
+# Info page
+@app.route("/info")
+def info_page():
+    return render_template("info.html")
+
 # Route planner page
 @app.route("/route")
 def route_planner():
