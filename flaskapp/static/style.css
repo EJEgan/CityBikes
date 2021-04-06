@@ -110,10 +110,19 @@ header {
     opacity: 1;
 }
 
+#charts{
+    width:100%;
+}
 
+#chart1{
+    width:45%;
+    float: left;
+}
 
-
-
+#chart2{
+    width:45%;
+    float: right;
+}
 
 
 
