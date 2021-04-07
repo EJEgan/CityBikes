@@ -9,9 +9,14 @@
 <body>
 
 <!-- divs for page navigation -->
-<div id="navigation">zz
+<div id="navigation">
+  <img id="logo" src="static/images/white_grey_dublinbikes.png">
   <div id="homenav">
     <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+  </div>
+
+  <div id="infonav">
+      <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
   </div>
 
   <div id="routenav">
