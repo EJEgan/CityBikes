@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Bike Curious Information - In Development</title>
+    <meta name="description" content="info.html">
+    <meta name="author" content="BikeCurious">
+
+    <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Space+Grotesk:wght@300&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        function initCharts(){
+            // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(initMap);
+        }
+
+    </script>
+</head>
+<body>
+
+<!-- divs for page navigation -->
+  <div id="navigation">
+      <img id="logo" src="static/images/white_grey_dublinbikes.png">
+
+    <div id="homenav">
+      <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+    </div>
+
+    <div id="infonav">
+      <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
+    </div>
+
+    <div id="routenav">
+      <a id="routelink" href="{{ url_for('route_planner') }}">Start your journey</a>
+    </div>
+  </div>
+
+  <div id="select_instruct">
+      <h3>Select a station to view bike and stand availability:</h3>
+  </div>
+
+<div id="map"></div>
+    <div id="chartExplainer"></div>
+  <div id="charts">
+    <div id="chart1"><canvas id="canvasWeek"></canvas></div>
+    <div id="chart2"> <canvas id="canvasHour"></canvas></div>
+    </div>
+<script>
+let map;
+
+function initMap() {
+
+  // fetching the static data
+  fetch("/stations").then(response => {
+      return response.json();
+      }).then(data => {
+      console.log("data ", data);
+
+  // fetching the available bikes data
+  fetch("/bikes").then(bikeResponse => {
+      return bikeResponse.json();
+      }).then(bikeData => {
+      console.log("bikeData ", bikeData);
+
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 53.349804, lng: -6.260310 },
+    zoom: 13,
+    });
+
+  // iterating over each station
+  data.forEach(station => {
+
+    var contentString;
+    // iterating over the availability data and building the content for the info window
+    bikeData.forEach(bikeStation => {
+      if (station.name == bikeStation.StationName) {
+        contentString = `${bikeStation.StationName} Avail Stands: ${bikeStation.AvailableBikeStands} Avail Bikes: ${bikeStation.AvailableBikes}`;
+        }
+      });
+
+    // info window for each marker
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString,
+    });
+
+    // adding the markers
+    const marker = new google.maps.Marker({
+      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
+      map: map,
+    });
+
+    // event handler for click
+    marker.addListener("click", () => {
+      infowindow.open(map, marker);
+        chartWeekly(station.number);
+        console.log('now to chart hourly with' + station.number);
+        chartHourly(station.number);
+    });
+  });
+
+    }).catch(err => {
+      console.log("OOPS!", err);
+  });
+  });
+}
+
+function getDayString(number){
+
+        var DaysOfWeek = new Array(7);
+        DaysOfWeek[0] = "Sunday";
+        DaysOfWeek[1] = "Monday";
+        DaysOfWeek[2] = "Tuesday";
+        DaysOfWeek[3] = "Wednesday";
+        DaysOfWeek[4] = "Thursday";
+        DaysOfWeek[5] = "Friday";
+        DaysOfWeek[6] = "Saturday";
+
+        return DaysOfWeek[number];
+}
+
+function chartWeekly(StationNumber){
+    // Called when user clicks on marker
+    // Draws charts at bottom of page
+    fetch("/chartW/" + StationNumber).then(response => {
+        return response.json();
+    }).then(data =>{
+            console.log(data);
+
+        // Chartist
+        // Set up lists to capture bikes & days
+        var days = [];
+        var bikes = [];
+        data.forEach(x => {
+            days.push(x.DayOfWeek);
+            bikes.push(x.AvailableBikes);
+        })
+        // Get the string for each day from its int value
+        days.forEach((value, index) => {
+            days[index] = getDayString(value);
+        })
+        console.log(days);
+        console.log(bikes);
+        // Draw chart
+        var ctx = document.getElementById("canvasHour").getContext('2d');
+        var canvas = new Chart(ctx, {
+            type: 'bar',
+
+            data: {
+                labels: days,
+                datasets: [{
+                    label: "Daily Average Availability",
+                    backgroundColor: 'rgb(24, 116, 78)',
+                    borderColor: 'rgb(24,62,116)',
+                    data: bikes
+                }]
+            },
+
+            options: {
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(24, 116, 78)'
+                    }
+                }
+            }
+
+        });
+
+    });
+}
+
+function chartHourly(StationNumber){
+        // Called when user clicks on marker
+    // Draws charts at bottom of page
+    fetch("/chartH/" + StationNumber).then(response => {
+        return response.json();
+    }).then(data =>{
+            console.log(data);
+
+        // Chartist
+        var today = new Date();
+        var todayNum = today.getDay();
+        //Calls getDayString to return word for day of week
+        var dayString = getDayString(todayNum);
+
+        // Set up lists to catch hours & bikes
+        // Will be formatted in such a way as to work 'round the bend', i.e. excluding our downtime 1-6am
+        var lateHours = [];
+        var earlyHours = [];
+        var lateBikes = [];
+        var earlyBikes = []
+        data.forEach(x => {
+         if (x.Hour <= 1){
+             earlyHours.push(x.Hour);
+             earlyBikes.push(x.AvailableBikes);
+        }else if (x.Hour > 1 && x.Hour < 6){
+            }
+            //pass
+            else{
+            lateHours.push(x.Hour);
+            lateBikes.push(x.AvailableBikes);
+            }
+        })
+        // finalize variables into hours and bikes in right order
+        var hours = lateHours.concat(earlyHours);
+        var bikes = lateBikes.concat(earlyBikes);
+        console.log(hours);
+        console.log(bikes);
+        // Chartist draw
+        var ctx = document.getElementById("canvasWeek").getContext('2d');
+        var canvas = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hours,
+                datasets: [{
+                    label: "Average Bike Availability on a " + dayString,
+                    backgroundColor: 'rgb(24,108,116)',
+                    borderColor: 'rgb(24,62,116)',
+                    data: bikes
+                }]
+            },
+
+            options: {
+
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(24, 116, 78)'
+                    }
+                }
+            }
+
+        });
+
+        var now = new Date();
+        var currentHour = now.getHours()
+        var sum = 0;
+        var soonList = [];
+        data.forEach(x =>{
+            if (x.Hour == currentHour || x.Hour ==currentHour + 1){
+                sum += x.AvailableBikes;
+                soonList.push(x.AvailableBikes);
+            }
+        })
+        console.log(average);
+        console.log(sum);
+        var average = Math.round(sum/2);
+        var chartExplainer = document.getElementById("chartExplainer");
+        while (chartExplainer.firstChild){
+            chartExplainer.removeChild(chartExplainer.firstChild);
+        }
+        chartExplainer.textContent += "There's usually around " + average + " bikes available here, if you arrive within the next hour!"
+        if (soonList[0] > soonList[1] && soonList[1] < 4){
+            chartExplainer.textContent += "You might want to consider a nearby stand instead, as the number of bikes here is usually quite low within the next hour"
+        }
+    });
+
+}
+
+  </script>
+
+ <script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNMDKUUBsPVblrArwU5AIKEt8ZirRosf4&callback=initCharts&libraries=&v=weekly"
+      async>
+</script>
+
+</body>
+</html>
