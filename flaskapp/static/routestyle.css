@@ -2,8 +2,8 @@
 #map {
   height: 70%;
   width: 90%;
-  margin: auto;
-  border: 6px solid #C2EABA;
+  margin: 3rem;
+  border: 6px solid z;
 }
 
 html,
@@ -13,6 +13,57 @@ body {
   padding: 0;
 }
 
+#navigation {
+    background-color: #166974;
+    padding: 4rem 0 4rem 0;
+    height: auto;
+    width: 100%;
+    color:white;
+}
+
+#logo{
+    height: 6rem;
+/*
+    width: 15%;
+*/
+    margin: -2rem 0 0 2rem;
+}
+
+#homenav,
+#infonav,
+#routenav {
+  /*display: block;*/
+/*  text-align: right;*/
+  float: right;
+  background-color: #166974;
+  height:2rem;
+  color: white;
+  overflow: hidden;
+  padding: 0 2rem 0 1rem;
+}
+
+#homelink, #infolink, #routelink {
+    color:white;
+    font-size: 2rem;
+    text-decoration: none;
+}
+
+
+#homelink > a,
+#infolink > a,
+#routelink > a{
+    color:white;
+    text-decoration: none;
+}
+
+#homenav > a:hover, #infonav > a:hover, #routenav > a:hover{
+    color:grey;
+}
+
+
+
+
+/*
 #homenav,
 #routenav,
 a {
@@ -59,3 +110,4 @@ a {
 #routelink {
   color: #5398BE;
 }
+*/
