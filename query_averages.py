@@ -43,7 +43,7 @@ df['DateTime'] = pd.to_datetime(df['DateTime'])
 df_w_datetime = df[['DayOfWeek', 'StationNumber', 'AvailableBikes', 'AvailableBikeStands', 'DateTime']]
 
 # Save to csv file (smaller than JSON file)
-csv = df_w_datetime.to_csv("bikesDataframe.csv", index = False)
+csv = df_w_datetime.to_csv("../bikesDataframe.csv", index = False)
 
 #Group by Station name, day of week, time. (This will be the key for your query to the json object)
 #mean_bikes = df.groupby(["StationNumber","DayOfWeek","Time"]).mean()
