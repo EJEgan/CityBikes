@@ -74,11 +74,12 @@ def chartWeekly(StationNumber):
     df = pd.read_csv(filepath)
     df['DateTime'] = pd.to_datetime(df['DateTime'])
 
+    # get narrower dataframe with just the chosen station
     station_df = df.loc[df['StationNumber'] == StationNumber]
+    # get average per day of week
     week_df = station_df.groupby(['DayOfWeek']).mean()
+    # add in day of week as an index so it makes it over in the json object
     week_df['DayOfWeek'] = week_df.index
-    station_df = station_df.set_index('DateTime').resample('1d').mean()
-    station_df['DateTime'] = station_df.index
     return week_df.to_json(orient='records')
 
 @app.route("/chartH/<int:StationNumber>")
@@ -92,10 +93,15 @@ def chartHourly(StationNumber):
     df = pd.read_csv(filepath)
     df['DateTime'] = pd.to_datetime(df['DateTime'])
 
-    day_number = datetime.today().weekday()  # produces an int value for day of the week
+    # produces an int value for day of the week
+    day_number = datetime.today().weekday()
+    # get narrower dataframe with only queried station number on day (of week) of query
     station_df = df.loc[(df['StationNumber'] == StationNumber) & (df['DayOfWeek'] == day_number)]
+    # use resample to get each hour averaged out across whole dataframe
     station_df = station_df.set_index('DateTime').resample('1h').mean()
+    # groupby each hour of the day, for 24 hours, i.e. 24 rows total
     hourly_df = station_df.groupby(station_df.index.hour).mean()
+    # add in index so it carries over to json object
     hourly_df['Hour'] = hourly_df.index
     return hourly_df.to_json(orient='records')
 

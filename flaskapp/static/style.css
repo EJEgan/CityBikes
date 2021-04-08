@@ -203,7 +203,9 @@ header {
     opacity: 1;
 }
 
-
+#charts{
+    width:100%;
+}
 
 /* BUTTONS */
 .primary_button{
@@ -225,6 +227,15 @@ header {
 .primary_button:hover{
     background-color:grey;
 
+}
+#chart1{
+    width:45%;
+    float: left;
+}
+
+#chart2{
+    width:45%;
+    float: right;
 }
 
 .secondary_button{
