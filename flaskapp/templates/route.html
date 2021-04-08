@@ -26,10 +26,10 @@
 
 <div class="journey_text">
 <h1>Journey Recommender System - Plan your trip!</h1>
-<p>Tired of leaving the house late - only to find there are no bikes or spaces left at your station?<br>
+<!--<p>Tired of leaving the house late - only to find there are no bikes or spaces left at your station?<br>
 Let our recommender system make life a little easier for you!<br><br>
     Enter your departure and arrival details - our system takes care of the rest.<br>
-    We will calculate the nearest station with the best available bikes.</p>
+    We will calculate the nearest station with the best available bikes.</p>-->
 
 <h3>Select your start and end point to begin:</h3>
 
@@ -37,7 +37,7 @@ Let our recommender system make life a little easier for you!<br><br>
 
 
 <div class="journey_selection">
-
+    <div class="journey_dropdowns">
   <div class="journey_dropdown">
 <label for="start">Departure Address:</label>
 <select id="start"></select>
@@ -48,12 +48,30 @@ Let our recommender system make life a little easier for you!<br><br>
 <select id="dest"></select>
         </div>
 
+
+        <div class="instructions">
+    <p>How to use:</p>
+            <p>Step 1: </p>
+            <p>Step 2:</p>
+            <p>Step 3:</p>
+        </div>
+
+
+    </div>
+
+
+    <div id="map" style="height: 800px"></div>
+
     </div>
 
 <br><br>
 
-<div id="map" style="height: 800px"></div>
 
+
+
+<div class="instructions">
+    <h2 class="instructions_dropdown">Click to see how to use</h2>
+</div>
 <script>
 
 let map;
