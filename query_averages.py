@@ -21,7 +21,7 @@ print("Connected")
 cursor = mydb.cursor()
 
 #Pandas read sql query
-sql_select_Query = pd.read_sql_query("SELECT DayOfWeek, StationNumber, Time, Date, AvailableBikes, AvailableBikeStands FROM DublinBikes.LiveHistoricalData LIMIT 10000", mydb)
+sql_select_Query = pd.read_sql_query("SELECT DayOfWeek, StationNumber, Time, Date, AvailableBikes, AvailableBikeStands FROM DublinBikes.LiveHistoricalData ORDER BY Date DESC LIMIT 10000", mydb)
 
 #Create a dataframe with all of the rows fetches in the sql query
 df = pd.DataFrame(sql_select_Query, columns=['DayOfWeek', 'StationNumber', 'Time', 'Date', 'AvailableBikes', 'AvailableBikeStands'])
