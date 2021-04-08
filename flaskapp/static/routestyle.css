@@ -1,9 +1,18 @@
 
 #map {
   height: 70%;
-  width: 90%;
-  margin: 3rem;
+  width: 85%;
+  margin: 3rem 3rem 1rem 3rem;
   border: 6px solid z;
+  border-radius:.5em;
+  box-shadow:
+  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+  0 12.5px 10px rgba(0, 0, 0, 0.06),
+  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+  0 100px 80px rgba(0, 0, 0, 0.12)
+;
 }
 
 html,
@@ -11,17 +20,26 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-}
+  background-image: url("/static/images/body_background.png");
+  background-size: 100%;
+  background-position:top left;
+  background-repeat: no-repeat;
+  color:black;
+  font-family: 'Lato', sans-serif;
 
-#navigation {
+  }
+
+/* #navigation {
     background-color: #166974;
     padding: 4rem 0 4rem 0;
     height: auto;
     width: 100%;
     color:white;
-}
+} */
 
 #logo{
+    margin-top: 3rem;
+    padding: 3rem;
     height: 6rem;
 /*
     width: 15%;
@@ -32,19 +50,20 @@ body {
 #homenav,
 #infonav,
 #routenav {
-  /*display: block;*/
-/*  text-align: right;*/
+  display: block;
+   text-align: right;
   float: right;
-  background-color: #166974;
-  height:2rem;
-  color: white;
+  background-color: none;
+  height:1rem;
+  color: purple;
   overflow: hidden;
-  padding: 0 2rem 0 1rem;
+  padding: 2rem 2rem 0 1rem;*/
 }
 
-#homelink, #infolink, #routelink {
-    color:white;
-    font-size: 2rem;
+
+#homelink, #infolink{
+    color:#34166d;
+    font-size: 1rem;
     text-decoration: none;
 }
 
@@ -57,10 +76,52 @@ body {
 }
 
 #homenav > a:hover, #infonav > a:hover, #routenav > a:hover{
-    color:grey;
+    color:#ff9632;
+}
+
+.select_instruct{
+    color:black;
+}
+
+.journey_text{
+    color:white;
+    margin-left:2rem;
+}
+
+.journey_text>h1{
+    color:#ff8872;
+}
+
+.journey_selection{
+    display: flex;
+   /* margin-left:2rem;
+    background-color: purple;
+    width: 90%;
+    margin: 3rem 3rem 1rem 3rem;*/
+}
+
+.journey_dropdown{
+    margin-top:2rem;
+    margin-left:2rem;
+    color:black;
+    font-weight:bold;
+    font-size:150%;
 }
 
 
+/*.journey_dropdown>select-selected {
+    color:purple;
+}*/
+
+.journey_dropdown>select:hover {
+    box-shadow: 0 0 10px 100px purple inset;
+    background-color:#4e2a94;
+    color:white;
+}
+
+#start{
+    font-weight:bold;
+}
 
 
 /*

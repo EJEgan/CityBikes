@@ -13,14 +13,17 @@
     
 </head>
 
-<body>
-  <!-- divs for page navigation -->
+<body class="body">
+
+
+  <div class="body_content">
+ <!--  divs for page navigation-->
   <div id="navigation">
       <img id="logo" src="static/images/white_grey_dublinbikes.png">
 
-    <div id="homenav">
+  <!--  <div id="homenav">
       <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
-    </div>
+    </div>-->
 
     <div id="infonav">
       <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
@@ -31,12 +34,37 @@
     </div>
   </div>
 
-  <header class="header">
-      <section class="hero-header-text">
-    <h1>Explore Dublin's Fair City</h1>
-    <h2>By Bike</h2>
-      </section>
-  </header>
 
+
+
+    <div class="row">
+
+        <div class="column_smaller">
+          <div class = "column_smaller_textbox">
+            <h2>Explore<br>Dublin <br>By Bike</h2>
+            <p>Rain,hail or snow.<br> Use our recommender system to plan your journey.</p>
+          <div class = "buttons">
+            <a href="{{ url_for('route_planner') }}"><button class="primary_button">Plan your journey ></button></a>
+            <a href="{{ url_for('info_page') }}"><button class="secondary_button">See all stations ></button></a>
+          </div>
+          </div>
+        </div>
+
+
+    <div class="column_larger">
+      <div class = "column_larger_textbox">
+      <img src="/static/images/new_transparent.png" alt="Homepage image">
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+</div>
 </body>
 </html>

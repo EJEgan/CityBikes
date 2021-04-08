@@ -6,21 +6,37 @@
 html,
 body {
   height: 100%;
+  background-image: url("/static/images/body_background.png");
+  background-size: 100%;
+  background-position:top left;
+  background-repeat: no-repeat;
+  font-family: 'Lato', sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Lato', sans-serif;
+  color:black;
 }
 
 
-#navigation {
+.body{
+    background-image: url("/static/images/body_background.png");
+    font-family: 'Lato', sans-serif;;
+}
+
+.body_content{
+    margin-left:13%;
+}
+
+/*#navigation {
     background-color: #166974;
     padding: 4rem 0 4rem 0;
     height: auto;
     width: 100%;
     color:white;
-}
+}*/
 
 #logo{
+    margin-left:2rem;
+    padding: 3rem 3rem 3rem 0;;
     height: 6rem;
 /*
     width: 15%;
@@ -31,55 +47,112 @@ body {
 #homenav,
 #infonav,
 #routenav {
-  /*display: block;*/
-/*  text-align: right;*/
+  display: block;
+   text-align: right;
   float: right;
-  background-color: #166974;
+  background-color: none;
   height:2rem;
-  color: white;
+  color: purple;
   overflow: hidden;
-  padding: 0 2rem 0 1rem;
+  padding: 2rem 2rem 0 1rem;*/
 }
 
-#homelink, #infolink, #routelink {
-    color:white;
-    font-size: 2rem;
+#routelink {
+    color:grey;
+    font-border:#34166d;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+#homelink, #infolink{
+    color:#34166d;
+    font-size: 1rem;
     text-decoration: none;
 }
 
 
-#homelink > a,
+/*#homelink > a,
 #infolink > a,
-#routelink > a{
+/*#routelink > a{
     color:white;
     text-decoration: none;
-}
+}*/
 
 #homenav > a:hover, #infonav > a:hover, #routenav > a:hover{
-    color:grey;
-}
+    color:#ff9632;
+}*/
 
-#map {
-  height: 70%;
-  width: 90%;
-  margin: 3rem;
-  border: 6px solid z;
-}
+
 
 
 
 /* HEADER */
 
-.hero-header-text{
-    color:white;
-    text-align: center;
-    margin: 20rem;
-    font-size: 40px;
+/* Create two equal columns that floats next to each other */
+.column {
+  flex: 50%;
+  /*background-color:pink;*/
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
+
+.column_smaller {
+  flex: 50%;
+  /*background-color:pink;*/
+  margin-left: 0rem;
+  margin-right: 0rem;
+  height:50rem;
+}
+
+.column_larger {
+  flex: 60%;
+  /*background-color:pink;*/
+  margin-left: 0rem;
+  margin-right: 0rem;
+  height:50rem;
+}
+
+
+
+/* Clear floats after the columns */
+.row{
+     display: flex;
+
+}
+
+
+
+/* TEXT INSIDE COLUMNS */
+
+.column_smaller_textbox>h2{
+    /*background-color:blue;*/
+    color:dark-grey;
+    font-size: 400%;
+}
+
+.column_smaller_textbox>p{
+    font-size: 150%;
+}
+
+.column_larger_textbox>h2{
+    background-color:blue;
+    color:green;
+    font-size: 500%;
+}
+
+
+.column_larger_textbox>img{
+    margin-top: 5rem;
+    max-width:100%
+
+}
+
+
 
 header {
     height: 600px;
     width: 100%;
+
     background: black;
     overflow: hidden;
     background: #C33764;  /* fallback colour. Make sure this is just one solid colour. */
@@ -89,7 +162,12 @@ header {
     background: linear-gradient(rgba(0, 212, 255, 0.2), rgba(2, 0, 36, 0.8)), url('images/dimitry-anikin-XI1yvtqKjl8-unsplash_cropped.jpg'); }
 
 
-
+.hero-header-text{
+    color:purple;
+    text-align: left;
+    margin: 2rem;
+    font-size: 2rem;
+}
 
 
 #select_instruct{
@@ -97,10 +175,23 @@ header {
     width: 90%;
     padding:1rem 1rem 0.5rem 1rem;
     font-size: 2rem;
+    color: black;
 /*
     background-color:#b2b2b0;
 */
-    color:#166974;
+    /*opacity: 0.5;*/
+
+}
+
+.select_instruct>h3{
+    margin: 3rem;
+    width: 90%;
+    padding:1rem 1rem 0.5rem 1rem;
+    font-size: 2rem;
+    color: white;
+/*
+    background-color:#b2b2b0;
+*/
     /*opacity: 0.5;*/
 
 }
@@ -108,13 +199,77 @@ header {
 
 
 .h3{
-    color: #166974;
+    color: black;
     opacity: 1;
 }
 
 
 
+/* BUTTONS */
+.primary_button{
+    display:inline-block;
+    padding:1em 3.2em;
+    margin:0 0.3em 0.3em 0;
+    border-radius:2em;
+    border: #3e4cb5;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#FFFFFF;
+    background-color:#3e4cb5;
+    text-align:center;
+    transition: all 0.2s;
+}
 
+.primary_button:hover{
+    background-color:grey;
+
+}
+
+.secondary_button{
+    display:inline-block;
+    padding:1em 3.2em;
+    margin:0 0.3em 0.3em 0;
+    border-radius:2em;
+    border: #3e4cb5;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#3e4cb5;
+    background-color:white;
+    text-align:center;
+    transition: all 0.2s;
+}
+
+.secondary_button:hover{
+    background-color:#3e4cb5;
+    color:grey;
+
+}
+
+
+.buttons{
+    border-radius: 90%;
+
+}
+
+
+#map {
+  height: 70%;
+  width: 90%;
+  margin: 3rem;
+  border: 6px solid z;
+  box-shadow:
+  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+  0 12.5px 10px rgba(0, 0, 0, 0.06),
+  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+  0 100px 80px rgba(0, 0, 0, 0.12)
+;
+}
 
 
 

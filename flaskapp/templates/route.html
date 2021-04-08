@@ -19,18 +19,36 @@
       <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
   </div>
 
-  <div id="routenav">
-    <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>
-  </div>
+<!--  <div id="routenav">-->
+<!--    <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>-->
+<!--  </div>-->
 </div>
 
-<h3>Select station:</h3>
+<div class="journey_text">
+<h1>Journey Recommender System - Plan your trip!</h1>
+<p>Tired of leaving the house late - only to find there are no bikes or spaces left at your station?<br>
+Let our recommender system make life a little easier for you!<br><br>
+    Enter your departure and arrival details - our system takes care of the rest.<br>
+    We will calculate the nearest station with the best available bikes.</p>
 
-<label for="start">Start:</label>
+<h3>Select your start and end point to begin:</h3>
+
+</div>
+
+
+<div class="journey_selection">
+
+  <div class="journey_dropdown">
+<label for="start">Departure Address:</label>
 <select id="start"></select>
+      </div>
 
-<label for="dest">Destination:</label>
+    <div class="journey_dropdown">
+<label for="dest">Destination Address:</label>
 <select id="dest"></select>
+        </div>
+
+    </div>
 
 <br><br>
 
@@ -109,7 +127,7 @@ function displayRoute(directionsService, directionsRenderer) {
 </script>
 
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoy1x8NH5BZFhA86GFgJk7tFyrnPhGbhw&callback=initMap&libraries=&v=weekly"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoy1x8NH5BZFhA86GFgJk7tFyrnPhGbhw&map_ids=ceb62d3e5dc52a3&callback=initMap&libraries=&v=weekly"
       async>
 </script>
 
