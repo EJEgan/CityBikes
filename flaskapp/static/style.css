@@ -203,9 +203,19 @@ header {
     opacity: 1;
 }
 
-#charts{
-    width:100%;
+#chartExplainer{
+    margin-left:r1em;
 }
+
+#charts{
+    background-color:pink;
+    margin:5rem;
+    width:80%;
+}
+
+/*#chart1{
+    width:80%;
+}*/
 
 /* BUTTONS */
 .primary_button{
@@ -281,6 +291,8 @@ header {
   0 100px 80px rgba(0, 0, 0, 0.12)
 ;
 }
+
+
 
 
 

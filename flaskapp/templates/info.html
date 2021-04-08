@@ -45,6 +45,7 @@
 
   <div class="select_instruct">
       <h3>Select a station to view <br>bike and stand <br>availability:</h3>
+
   </div>
 
 <div id="map"></div>
@@ -53,6 +54,12 @@
     <div id="chart1"><canvas id="canvasWeek"></canvas></div>
     <div id="chart2"> <canvas id="canvasHour"></canvas></div>
     </div>
+
+
+
+
+/*WEATHER TEST */
+
 <script>
 let map;
 
@@ -80,22 +87,46 @@ function initMap() {
   data.forEach(station => {
 
     var contentString;
+
+    var stationData;
+
     // iterating over the availability data and building the content for the info window
     bikeData.forEach(bikeStation => {
       if (station.name == bikeStation.StationName) {
+        stationData = bikeStation;
         contentString = `${bikeStation.StationName} Avail Stands: ${bikeStation.AvailableBikeStands} Avail Bikes: ${bikeStation.AvailableBikes}`;
         }
       });
+
+    // Default marker color orange
+    var color = "ff8872";
+
+
+
+    // make colour of the marker green
+    if (stationData["AvailableBikes"] > 10) {
+        color = "D0E6A5";
+        // make colour of the marker grey
+    } else if (stationData["AvailableBikes"] < 5) {
+        color = "c9bbc8";
+    }
+
 
     // info window for each marker
     const infowindow = new google.maps.InfoWindow({
       content: contentString,
     });
 
-    // adding the markers
-    const marker = new google.maps.Marker({
-      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
-      map: map,
+
+    let url = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|";
+    url += color;
+
+    let marker = new google.maps.Marker({
+        map: map,
+        position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
+        icon: {
+          url: url
+        }
     });
 
     // event handler for click

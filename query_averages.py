@@ -21,7 +21,7 @@ print("Connected")
 cursor = mydb.cursor()
 
 #Pandas read sql query
-sql_select_Query = pd.read_sql_query("SELECT DayOfWeek, StationNumber, Time, Date, AvailableBikes, AvailableBikeStands FROM DublinBikes.LiveHistoricalData ORDER BY Date DESC LIMIT 10000", mydb)
+sql_select_Query = pd.read_sql_query("SELECT DayOfWeek, StationNumber, Time, Date, AvailableBikes, AvailableBikeStands FROM DublinBikes.LiveHistoricalData ORDER BY Date DESC LIMIT 1000000", mydb)
 
 #Create a dataframe with all of the rows fetches in the sql query
 df = pd.DataFrame(sql_select_Query, columns=['DayOfWeek', 'StationNumber', 'Time', 'Date', 'AvailableBikes', 'AvailableBikeStands'])
@@ -43,7 +43,7 @@ df['DateTime'] = pd.to_datetime(df['DateTime'])
 df_w_datetime = df[['DayOfWeek', 'StationNumber', 'AvailableBikes', 'AvailableBikeStands', 'DateTime']]
 
 # Save to csv file (smaller than JSON file)
-csv = df_w_datetime.to_csv("../bikesDataframe.csv", index = False)
+csv = df_w_datetime.to_csv("bikesDataframe.csv", index = False)
 
 #Group by Station name, day of week, time. (This will be the key for your query to the json object)
 #mean_bikes = df.groupby(["StationNumber","DayOfWeek","Time"]).mean()
