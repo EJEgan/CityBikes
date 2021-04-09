@@ -198,24 +198,41 @@ header {
 
 
 
+
 .h3{
     color: black;
     opacity: 1;
 }
+#charts_div{
+/*    background-color: red;*/
+
+}
 
 #chartExplainer{
-    margin-left:r1em;
+    background-color: rgba(80, 15, 158, 0.6);
+    width: 35%;
+    margin: 2rem 0 1rem 13%;
+    padding: 2rem;
+    font-size:2rem;
+    color:orange;
 }
 
 #charts{
-    background-color:pink;
-    margin:5rem;
-    width:80%;
+    width:30%;
+    float:right;
+    margin-right:2rem;
 }
 
 /*#chart1{
-    width:80%;
+    width:50%;
+    float: left;
+}
+
+#chart2{
+    width:50%;
+    float: right;
 }*/
+
 
 /* BUTTONS */
 .primary_button{
@@ -238,15 +255,7 @@ header {
     background-color:grey;
 
 }
-#chart1{
-    width:45%;
-    float: left;
-}
 
-#chart2{
-    width:45%;
-    float: right;
-}
 
 .secondary_button{
     display:inline-block;
@@ -280,7 +289,7 @@ header {
 #map {
   height: 60%;
   width: 86%;
-  margin: 3rem 3rem 3rem 13%;
+  margin: 1rem 3rem 3rem 13%;
   border: 6px solid z;
   box-shadow:
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),
@@ -292,9 +301,32 @@ header {
 ;
 }
 
+.wrapper{
+    margin-bottom:200px;
+
+}
+.weather_widget{
+    float:right;
+    postion:block;
+    background-color: rgba(80, 15, 158, 0.4);
+    border-radius:.2rem;
+    width: 10rem;
+    padding:.5rem 1rem .5rem 1rem;
+    margin:0 4rem 2rem 2rem;
+    color:white;
+    font-weight:bold;
+}
 
 
-
+#description,#temp,#icon {
+    position:block;
+    color:white;
+    opacity: 1;
+    color:white
+    font-weight:bold;
+    font-size: 30px;
+    margin-right:400px;
+}
 
 
 
