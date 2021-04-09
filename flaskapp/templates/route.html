@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bike Curious Route Planner - In Development</title>
+    <title>Curious Bikes</title>
+    <link rel="icon" href="static/images/bike.png" type="image/png">
 
     <link href="{{ url_for('static', filename='routestyle.css') }}" type="text/css" rel="stylesheet">
 </head>
@@ -108,6 +109,10 @@ Let our recommender system make life a little easier for you!<br><br>
 
 
 <script>
+
+function loadFunction() {
+  alert("Page is loaded");
+}
 
 let map;
 let markerArray = [];
