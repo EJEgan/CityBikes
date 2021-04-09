@@ -184,7 +184,7 @@ header {
 }
 
 .select_instruct>h3{
-    margin: 3rem;
+    margin: 0rem;
     width: 90%;
     padding:1rem 1rem 0.5rem 1rem;
     font-size: 2rem;
@@ -279,8 +279,8 @@ header {
 
 #map {
   height: 60%;
-  width: 90%;
-  margin: 3rem;
+  width: 86%;
+  margin: 3rem 3rem 3rem 13%;
   border: 6px solid z;
   box-shadow:
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),
