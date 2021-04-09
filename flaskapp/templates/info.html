@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="static/images/bike.png" type="image/png">
 
-    <title>Bike Curious Information - In Development</title>
+    <title>Curious Bikes</title>
     <meta name="description" content="info.html">
     <meta name="author" content="BikeCurious">
 
@@ -21,6 +22,9 @@
       // Set a callback to run when the Google Visualization API is loaded.
       google.charts.setOnLoadCallback(initMap);
         }
+
+
+
 
     </script>
 </head>
@@ -45,27 +49,103 @@
     </div>
   </div>
 
+    <div class="wrapper">
+        <div class="weather_widget">
+        <div id="description"></div>
+        <h1 id="temp"></h1>
+    <!--
+        <div id="location"></div>
+    -->
+            <div id="icon"></div>
+        </div>
+
+
   <div class="select_instruct">
       <h3>Select a station to view <br>bike and stand <br>availability:</h3>
-
   </div>
+
+         </div>
+
+
 
 
 
 </div>
 
-<div id="map"></div>
+<div id="charts_div">
     <div id="chartExplainer"></div>
-  <div id="charts">
-    <div id="chart1"><canvas id="canvasWeek"></canvas></div>
-    <div id="chart2"> <canvas id="canvasHour"></canvas></div>
-    </div>
+      <div id="charts">
+        <div id="chart1"><canvas id="canvasWeek"></canvas></div>
+        <div id="chart2"> <canvas id="canvasHour"></canvas></div>
+      </div>
+
+</div>
+
+<div id="map"></div>
+
+
 
 
 
 
 
 <script>
+
+
+
+//WEATHER WIDGET
+
+//Reference: https://codepen.io/mattfroese/pen/WaeYQV
+    const key = 'c9c399bd5013dcecd1eb42137fcce7af';
+if(key=='') document.getElementById('temp').innerHTML = ('Error loading weather data.');
+
+function weatherBallon( cityID ) {
+	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + cityID+ '&appid=' + key)
+	.then(function(resp) { return resp.json() }) // Convert data to json
+	.then(function(data) {
+		drawWeather(data);
+		console.log(data);
+	})
+	.catch(function() {
+		// catch any errors
+	});
+
+
+}
+function drawWeather( d ) {
+  var celcius = Math.round(parseFloat(d.main.temp)-273.15);
+	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+  var description = d.weather[0].description;
+  var icon_var = d.weather[0].icon;
+  var icon = 'http://openweathermap.org/img/w/'+icon_var+'.png'
+
+  var icon = '<img src=\'http://openweathermap.org/img/w/'+icon_var+'.png\'>'
+
+	document.getElementById('description').innerHTML = description;
+	document.getElementById('temp').innerHTML = celcius + '&deg;';
+	//document.getElementById('location').innerHTML = d.name;
+	document.getElementById('icon').innerHTML = icon;
+
+  if( description.indexOf('rain') > 0 ) {
+  	document.body.className = 'rainy';
+  } else if( description.indexOf('cloud') > 0 ) {
+  	document.body.className = 'cloudy';
+  } else if( description.indexOf('sunny') > 0 ) {
+  	document.body.className = 'sunny';
+  } else {
+  	document.body.className = 'clear';
+  }
+}
+window.onload = function() {
+	weatherBallon( 2964574 );
+}
+
+
+
+
+//MAP
+
+
 let map;
 
 function initMap() {
@@ -194,8 +274,8 @@ function chartWeekly(StationNumber){
                 labels: days,
                 datasets: [{
                     label: "Daily Average Availability",
-                    backgroundColor: 'rgb(24, 116, 78)',
-                    borderColor: 'rgb(24,62,116)',
+                    backgroundColor: 'rgb(29, 176, 229)',
+                    borderColor: 'rgb(29,176,229)',
                     data: bikes
                 }]
             },
@@ -204,7 +284,7 @@ function chartWeekly(StationNumber){
                 legend: {
                     display: true,
                     labels: {
-                        fontColor: 'rgb(24, 116, 78)'
+                        fontColor: 'rgb(109, 28, 169)'
                     }
                 }
             }
@@ -259,8 +339,8 @@ function chartHourly(StationNumber){
                 labels: hours,
                 datasets: [{
                     label: "Average Bike Availability on a " + dayString,
-                    backgroundColor: 'rgb(24,108,116)',
-                    borderColor: 'rgb(24,62,116)',
+                    backgroundColor: 'rgb(29, 176, 229)',
+                    borderColor: 'rgb(29,176,229)',
                     data: bikes
                 }]
             },
@@ -270,7 +350,7 @@ function chartHourly(StationNumber){
                 legend: {
                     display: true,
                     labels: {
-                        fontColor: 'rgb(24, 116, 78)'
+                        fontColor: 'rgb(109, 28, 169)'
                     }
                 }
             }
