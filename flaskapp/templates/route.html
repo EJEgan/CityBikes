@@ -110,6 +110,7 @@ Let our recommender system make life a little easier for you!<br><br>
 <script>
 
 let map;
+let markerArray = [];
 
 function initMap() {
 
@@ -125,8 +126,35 @@ function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 53.349804, lng: -6.260310 },
     zoom: 13,
+    disableDoubleClickZoom: true,
     });
     directionsRenderer.setMap(map);
+
+
+
+  // listener for double click on map
+  map.addListener("dblclick", (e) => {
+    if (markerArray.length == 0) {
+      const newMarker = new google.maps.Marker({
+        position: e.latLng,
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      });
+      // add marker to the marker array
+      markerArray.push(newMarker);
+    } else if (markerArray.length == 1) {
+      const newMarker = new google.maps.Marker({
+        position: e.latLng,
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+      });
+      // add marker to the marker array
+      markerArray.push(newMarker);
+    } else {
+      resetMarkers();
+    }
+  });
+
 
   var onChange = function() {
     displayRoute(directionsService, directionsRenderer);
@@ -156,6 +184,25 @@ function initMap() {
     });
 
    });
+}
+
+
+// function to reset start and end markers
+function resetMarkers() {
+  var numMarkers = markerArray.length;
+  if (numMarkers > 0) {
+    for (var i=0; i < numMarkers; i++) {
+      markerArray[i].setMap(null);
+    }
+    markerArray = [];
+
+    for (var l=0; l<closestFive.length; l++) {
+      closestFive[l].setMap(null);
+    }
+    for (var g=0; g<firstFive.length; g++) {
+      firstFive[g].setMap(null);
+    }
+  }
 }
 
 
