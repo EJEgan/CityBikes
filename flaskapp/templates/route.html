@@ -92,7 +92,7 @@ Let our recommender system make life a little easier for you!<br><br>
             <option value="23">23:00</option>
         </select><br><br>
 
-        <button onclick="">Recommend Route</button>
+        <button onclick="recStations()">Recommend Route</button>
 
     </div>
 
@@ -111,11 +111,17 @@ Let our recommender system make life a little easier for you!<br><br>
 
 let map;
 let markerArray = [];
+let closestFive = [];
+let closestFiveStatNums = [];
+let firstFive = [];
+let chosenStations = [];
+let directionsService;
+let directionsRenderer;
 
 function initMap() {
 
-  var directionsService = new google.maps.DirectionsService;
-  var directionsRenderer = new google.maps.DirectionsRenderer;
+  directionsService = new google.maps.DirectionsService;
+  directionsRenderer = new google.maps.DirectionsRenderer;
 
   // fetching the static data
   fetch("/stations").then(response => {
@@ -206,6 +212,75 @@ function resetMarkers() {
 }
 
 
+// function to calculate the recommended stations
+function recStations() {
+  var count = 0;
+
+  var allMarks = [];
+  var allStatNums = [];
+  chosenStations = [];
+
+  // fetching the static data
+  fetch("/stations").then(response => {
+      return response.json();
+      }).then(data => {
+      console.log("data ", data);
+
+    // iterating over each station
+    data.forEach(station => {
+
+    // adding the markers
+    const marker = new google.maps.Marker({
+      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
+    });
+
+    allMarks.push(marker);
+    allStatNums.push(station.number);
+    });
+
+  for (var i=0; i<markerArray.length; i++) {
+    closestFive = [];
+    closestFiveStatNums = [];
+    var closestDists = [];
+    var allDists = [];
+
+    for (var j=0; j<allMarks.length; j++) {
+      var dist = google.maps.geometry.spherical.computeDistanceBetween(markerArray[i].position, allMarks[j].position);
+      allDists.push(dist);
+    }
+
+    for (var h=0; h<5; h++) {
+      closestFive.push(allMarks[h]);
+      closestFiveStatNums.push(allStatNums[h]);
+      closestDists.push(allDists[h]);
+    }
+    for (var k=5; k<allDists.length; k++) {
+      if (allDists[k] < Math.max(...closestDists)) {
+        closestFive.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFive.push(allMarks[k]);
+        closestFiveStatNums.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFiveStatNums.push(allStatNums[k]);
+        closestDists.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestDists.push(allDists[k]);
+      }
+    }
+
+    // instead of displaying the closest five markers, I want to pick the first one and display its route
+    chosenStations.push(closestFive[0]);
+
+    if (count == 0) {
+      firstFive = closestFive;
+    }
+    count++;
+  }
+
+  displayRecRoute(directionsService, directionsRenderer, chosenStations);
+  });
+
+}
+
+
+
 // function to display the selected route on the map
 function displayRoute(directionsService, directionsRenderer) {
     var startPos = document.getElementById("start").value;
@@ -214,6 +289,25 @@ function displayRoute(directionsService, directionsRenderer) {
     directionsService.route({
       origin: startPos,
       destination: destPos,
+      travelMode: 'BICYCLING'
+    }, function(response, status) {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(response);
+      } else {
+        window.alert('Oops, ' + status);
+      }
+    });
+}
+
+
+// function to display the recommended route on the map
+function displayRecRoute(directionsService, directionsRenderer, chosenStations) {
+  var recStart = chosenStations[0].position;
+  var recDest = chosenStations[1].position;
+
+  directionsService.route({
+      origin: recStart,
+      destination: recDest,
       travelMode: 'BICYCLING'
     }, function(response, status) {
       if (status === 'OK') {
