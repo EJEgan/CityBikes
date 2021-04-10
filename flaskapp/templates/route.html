@@ -60,6 +60,43 @@ Let our recommender system make life a little easier for you!<br><br>
     </div>
 
 
+    <div id="recommend_input">
+
+        <label for="day_select">Choose a day:</label>
+        <select id="day_select">
+            <option value="0">Today</option>
+            <option value="1">Tomorrow</option>
+        </select><br><br>
+
+        <label for="time_select">Choose a time:</label>
+        <select id="time_select">
+            <option value="0">0:00</option>
+            <option value="1">1:00</option>
+            <option value="6">6:00</option>
+            <option value="7">7:00</option>
+            <option value="8">8:00</option>
+            <option value="9">9:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+            <option value="18">18:00</option>
+            <option value="19">19:00</option>
+            <option value="20">20:00</option>
+            <option value="21">21:00</option>
+            <option value="22">22:00</option>
+            <option value="23">23:00</option>
+        </select><br><br>
+
+        <button onclick="recStations()">Recommend Route</button>
+
+    </div>
+
+
     <div id="map" style="height: 800px"></div>
 
     </div>
@@ -73,11 +110,18 @@ Let our recommender system make life a little easier for you!<br><br>
 <script>
 
 let map;
+let markerArray = [];
+let closestFive = [];
+let closestFiveStatNums = [];
+let firstFive = [];
+let chosenStations = [];
+let directionsService;
+let directionsRenderer;
 
 function initMap() {
 
-  var directionsService = new google.maps.DirectionsService;
-  var directionsRenderer = new google.maps.DirectionsRenderer;
+  directionsService = new google.maps.DirectionsService;
+  directionsRenderer = new google.maps.DirectionsRenderer;
 
   // fetching the static data
   fetch("/stations").then(response => {
@@ -88,8 +132,35 @@ function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 53.349804, lng: -6.260310 },
     zoom: 13,
+    disableDoubleClickZoom: true,
     });
     directionsRenderer.setMap(map);
+
+
+
+  // listener for double click on map
+  map.addListener("dblclick", (e) => {
+    if (markerArray.length == 0) {
+      const newMarker = new google.maps.Marker({
+        position: e.latLng,
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      });
+      // add marker to the marker array
+      markerArray.push(newMarker);
+    } else if (markerArray.length == 1) {
+      const newMarker = new google.maps.Marker({
+        position: e.latLng,
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+      });
+      // add marker to the marker array
+      markerArray.push(newMarker);
+    } else {
+      resetMarkers();
+    }
+  });
+
 
   var onChange = function() {
     displayRoute(directionsService, directionsRenderer);
@@ -122,6 +193,94 @@ function initMap() {
 }
 
 
+// function to reset start and end markers
+function resetMarkers() {
+  var numMarkers = markerArray.length;
+  if (numMarkers > 0) {
+    for (var i=0; i < numMarkers; i++) {
+      markerArray[i].setMap(null);
+    }
+    markerArray = [];
+
+    for (var l=0; l<closestFive.length; l++) {
+      closestFive[l].setMap(null);
+    }
+    for (var g=0; g<firstFive.length; g++) {
+      firstFive[g].setMap(null);
+    }
+  }
+}
+
+
+// function to calculate the recommended stations
+function recStations() {
+  var count = 0;
+
+  var allMarks = [];
+  var allStatNums = [];
+  chosenStations = [];
+
+  // fetching the static data
+  fetch("/stations").then(response => {
+      return response.json();
+      }).then(data => {
+      console.log("data ", data);
+
+    // iterating over each station
+    data.forEach(station => {
+
+    // adding the markers
+    const marker = new google.maps.Marker({
+      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
+    });
+
+    allMarks.push(marker);
+    allStatNums.push(station.number);
+    });
+
+  for (var i=0; i<markerArray.length; i++) {
+    closestFive = [];
+    closestFiveStatNums = [];
+    var closestDists = [];
+    var allDists = [];
+
+    for (var j=0; j<allMarks.length; j++) {
+      var dist = google.maps.geometry.spherical.computeDistanceBetween(markerArray[i].position, allMarks[j].position);
+      allDists.push(dist);
+    }
+
+    for (var h=0; h<5; h++) {
+      closestFive.push(allMarks[h]);
+      closestFiveStatNums.push(allStatNums[h]);
+      closestDists.push(allDists[h]);
+    }
+    for (var k=5; k<allDists.length; k++) {
+      if (allDists[k] < Math.max(...closestDists)) {
+        closestFive.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFive.push(allMarks[k]);
+        closestFiveStatNums.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFiveStatNums.push(allStatNums[k]);
+        closestDists.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestDists.push(allDists[k]);
+      }
+    }
+
+    // instead of displaying the closest five markers, I want to pick the first one and display its route
+    chosenStations.push(closestFive[0]);
+
+    if (count == 0) {
+      firstFive = closestFive;
+    }
+    count++;
+  }
+
+  displayRecRoute(directionsService, directionsRenderer, chosenStations);
+  });
+
+}
+
+
+
 // function to display the selected route on the map
 function displayRoute(directionsService, directionsRenderer) {
     var startPos = document.getElementById("start").value;
@@ -130,6 +289,25 @@ function displayRoute(directionsService, directionsRenderer) {
     directionsService.route({
       origin: startPos,
       destination: destPos,
+      travelMode: 'BICYCLING'
+    }, function(response, status) {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(response);
+      } else {
+        window.alert('Oops, ' + status);
+      }
+    });
+}
+
+
+// function to display the recommended route on the map
+function displayRecRoute(directionsService, directionsRenderer, chosenStations) {
+  var recStart = chosenStations[0].position;
+  var recDest = chosenStations[1].position;
+
+  directionsService.route({
+      origin: recStart,
+      destination: recDest,
       travelMode: 'BICYCLING'
     }, function(response, status) {
       if (status === 'OK') {
