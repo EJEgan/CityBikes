@@ -12,6 +12,7 @@ from os import path
 app = Flask(__name__)
 
 from joblib import load
+import pandas as pd
 
 # Homepage on first loading
 @app.route("/")
@@ -107,7 +108,7 @@ def chartHourly(StationNumber):
     hourly_df['Hour'] = hourly_df.index
     return hourly_df.to_json(orient='records')
 
-def get_Xnew(hour, day, df):
+def get_Xnew(day, hour, df):
     df['Date'] = pd.to_datetime(df['Date'])
     df['Hour'] = df['Date'].dt.hour
     df['DayOfWeek'] = df['Date'].dt.dayofweek
@@ -163,7 +164,7 @@ def predictBikes(StationNumber, Day, Hour):
     # Create a dataframe with all of the rows fetches in the sql query
     df_WF = pd.DataFrame(sql_select_Query, columns=['Date', 'Temperature', 'Windspeed'])
 
-    X_new = get_Xnew(Hour, Day, df_WF)
+    X_new = get_Xnew(Day, Hour, df_WF)
     models = load('availableBikesModels.joblib')
 
     return models[StationNumber].predict(X_new)[0]
@@ -188,7 +189,7 @@ def predictStands(StationNumber, Day, Hour):
     # Create a dataframe with all of the rows fetches in the sql query
     df_WF = pd.DataFrame(sql_select_Query, columns=['Date', 'Temperature', 'Windspeed'])
 
-    X_new = get_Xnew(Hour, Day, df_WF)
+    X_new = get_Xnew(Day, Hour, df_WF)
     models = load('availableStandsModels.joblib')
 
     return models[StationNumber].predict(X_new)[0]
