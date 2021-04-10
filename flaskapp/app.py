@@ -167,7 +167,7 @@ def predictBikes(StationNumber, Day, Hour):
     X_new = get_Xnew(Day, Hour, df_WF)
     models = load('availableBikesModels.joblib')
 
-    return models[StationNumber].predict(X_new)[0]
+    return str(models[StationNumber].predict(X_new)[0])
 
 @app.route("/predictStands/<int:StationNumber>/<int:Day>/<int:Hour>")
 def predictStands(StationNumber, Day, Hour):
@@ -192,7 +192,7 @@ def predictStands(StationNumber, Day, Hour):
     X_new = get_Xnew(Day, Hour, df_WF)
     models = load('availableStandsModels.joblib')
 
-    return models[StationNumber].predict(X_new)[0]
+    return str(models[StationNumber].predict(X_new)[0])
 
 # Just a sample static page for proof of concept
 @app.route("/about")
