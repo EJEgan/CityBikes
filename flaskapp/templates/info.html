@@ -34,7 +34,7 @@
 
 <!-- divs for page navigation -->
   <div id="navigation">
-      <img id="logo" src="static/images/white_grey_dublinbikes.png">
+      <a href="/"><img id="logo" src="static/images/white_grey_dublinbikes.png"></a>
 
     <div id="homenav">
       <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
@@ -72,13 +72,12 @@
 
 </div>
 
-<div id="charts_div">
-    <div id="chartExplainer"></div>
-      <div id="charts">
+<div id="charts_div" style="display:none">
+    <div id="chartExplainer" style="display:none"> </div>
+      <div id="charts" style="display:none">
         <div id="chart1"><canvas id="canvasWeek"></canvas></div>
         <div id="chart2"> <canvas id="canvasHour"></canvas></div>
       </div>
-
 </div>
 
 <div id="map"></div>
@@ -220,6 +219,10 @@ function initMap() {
         chartWeekly(station.number);
         console.log('now to chart hourly with' + station.number);
         chartHourly(station.number);
+
+    //make divs visible
+    document.getElementById( 'chartExplainer' ).style.display = 'block';
+
     });
   });
 
@@ -369,15 +372,24 @@ function chartHourly(StationNumber){
         })
         console.log(average);
         console.log(sum);
+
+
         var average = Math.round(sum/2);
         var chartExplainer = document.getElementById("chartExplainer");
+
         while (chartExplainer.firstChild){
             chartExplainer.removeChild(chartExplainer.firstChild);
         }
-        chartExplainer.textContent += "There's usually around " + average + " bikes available here, if you arrive within the next hour!"
+        chartExplainer.textContent += "On average, there's usually " + average + " bikes available at your selected station at this time!"
         if (soonList[0] > soonList[1] && soonList[1] < 4){
             chartExplainer.textContent += "You might want to consider a nearby stand instead, as the number of bikes here is usually quite low within the next hour"
         }
+
+
+        //Display nivs
+        document.getElementById("charts_div").style.display='block';
+        document.getElementById("chartExplainer").style.display='block';
+        document.getElementById("charts").style.display='block';
     });
 
 }
@@ -390,5 +402,8 @@ function chartHourly(StationNumber){
 </script>
 
 
+
+
 </body>
+
 </html>
