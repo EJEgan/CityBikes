@@ -2,30 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bike Curious Route Planner - In Development</title>
+    <title>Curious Bikes</title>
+    <link rel="icon" href="static/images/bike.png" type="image/png">
+
+    <link href="{{ url_for('static', filename='routestyle.css') }}" type="text/css" rel="stylesheet">
 </head>
 <body>
 
-<h3>Select station:</h3>
+<!-- divs for page navigation -->
+<div id="navigation">
+    <a href="/"><img id="logo" src="static/images/white_grey_dublinbikes.png"></a>
+  <div id="homenav">
+    <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+  </div>
 
-<label for="start">Start:</label>
+  <div id="infonav">
+      <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
+  </div>
+
+<!--  <div id="routenav">-->
+<!--    <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>-->
+<!--  </div>-->
+</div>
+
+<div class="journey_text">
+<h1>Journey Recommender System - Plan your trip!</h1>
+<!--<p>Tired of leaving the house late - only to find there are no bikes or spaces left at your station?<br>
+Let our recommender system make life a little easier for you!<br><br>
+    Enter your departure and arrival details - our system takes care of the rest.<br>
+    We will calculate the nearest station with the best available bikes.</p>-->
+
+<h3>Select your start and end point to begin:</h3>
+
+</div>
+
+
+<div class="journey_selection">
+    <div class="journey_dropdowns">
+  <div class="journey_dropdown">
+<label for="start">Departure Address:</label>
 <select id="start"></select>
+      </div>
 
-<label for="dest">Destination:</label>
+    <div class="journey_dropdown">
+<label for="dest">Destination Address:</label>
 <select id="dest"></select>
+        </div>
+
+
+        <div class="instructions">
+    <p>How to use:</p>
+            <p>Step 1: </p>
+            <p>Step 2:</p>
+            <p>Step 3:</p>
+        </div>
+
+
+    </div>
+
+
+    <div id="recommend_input">
+
+        <label for="day_select">Choose a day:</label>
+        <select id="day_select">
+            <option value="0">Today</option>
+            <option value="1">Tomorrow</option>
+        </select><br><br>
+
+        <label for="time_select">Choose a time:</label>
+        <select id="time_select">
+            <option value="6">6:00</option>
+            <option value="7">7:00</option>
+            <option value="8">8:00</option>
+            <option value="9">9:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+            <option value="18">18:00</option>
+            <option value="19">19:00</option>
+            <option value="20">20:00</option>
+            <option value="21">21:00</option>
+            <option value="22">22:00</option>
+            <option value="23">23:00</option>
+        </select><br><br>
+
+        <button onclick="recStations()">Recommend Route</button>
+
+    </div>
+
+
+    <div id="map" style="height: 800px"></div>
+
+    </div>
 
 <br><br>
 
-<div id="map" style="height: 800px"></div>
+
+
+
 
 <script>
 
+function loadFunction() {
+  alert("Page is loaded");
+}
+
 let map;
+let markerArray = [];
+let closestFive = [];
+let closestFive2 = [];
+let closestFiveStatNums = [];
+let closestFiveStatNums2 = [];
+let firstFive = [];
+let firstFive2 = [];
+let chosenStations = [];
+let directionsService;
+let directionsRenderer;
+
+
 
 function initMap() {
 
-  var directionsService = new google.maps.DirectionsService;
-  var directionsRenderer = new google.maps.DirectionsRenderer;
+  directionsService = new google.maps.DirectionsService;
+  directionsRenderer = new google.maps.DirectionsRenderer;
 
   // fetching the static data
   fetch("/stations").then(response => {
@@ -36,14 +140,52 @@ function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 53.349804, lng: -6.260310 },
     zoom: 13,
+    disableDoubleClickZoom: true,
     });
     directionsRenderer.setMap(map);
+
+
+
+  // listener for double click on map
+  map.addListener("dblclick", (e) => {
+    if (markerArray.length == 0) {
+      const newMarker = new google.maps.Marker({
+        position: e.latLng,
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      });
+      // add marker to the marker array
+      markerArray.push(newMarker);
+    } else if (markerArray.length == 1) {
+      const newMarker = new google.maps.Marker({
+        position: e.latLng,
+        map: map,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+      });
+      // add marker to the marker array
+      markerArray.push(newMarker);
+    } else {
+      resetMarkers();
+    }
+  });
+
 
   var onChange = function() {
     displayRoute(directionsService, directionsRenderer);
   };
   document.getElementById("start").addEventListener('change', onChange);
   document.getElementById("dest").addEventListener('change', onChange);
+
+  var stationsList = "";
+
+  // iterating over each station
+  data.forEach(station => {
+    stationsList += "<option value='" + station.latitude + "," + station.longitude + "'>" + station.address + "</option>";
+    });
+
+  // filling in the stations drop downs
+  document.getElementById("start").innerHTML = stationsList;
+  document.getElementById("dest").innerHTML = stationsList;
 
   // iterating over each station
   data.forEach(station => {
@@ -58,24 +200,167 @@ function initMap() {
    });
 }
 
-var stationsList = "";
 
-// fetching the static data
-fetch("/stations").then(response => {
-    return response.json();
-    }).then(data => {
-    console.log("data ", data);
+// function to reset start and end markers
+function resetMarkers() {
+  var numMarkers = markerArray.length;
+  if (numMarkers > 0) {
+    for (var i=0; i < numMarkers; i++) {
+      markerArray[i].setMap(null);
+    }
+    markerArray = [];
+  }
+}
 
-  // iterating over each station
-  data.forEach(station => {
-    stationsList += "<option value='" + station.latitude + "," + station.longitude + "'>" + station.address + "</option>";
+
+// function to calculate the recommended stations
+function recStations() {
+  var count = 0;
+
+  var d = new Date();
+  var dayIn = (parseInt(document.getElementById("day_select").value) + d.getDay() + 6) % 7;
+  var hourIn = parseInt(document.getElementById("time_select").value);
+
+  var allMarks = [];
+  var allStatNums = [];
+  chosenStations = [];
+  var chosenStat;
+  var chosenStat2;
+
+  // fetching the static data
+  fetch("/stations").then(response => {
+      return response.json();
+      }).then(data => {
+      console.log("data ", data);
+
+    // iterating over each station
+    data.forEach(station => {
+
+    // adding the markers
+    const marker = new google.maps.Marker({
+      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
     });
 
-  // filling in the stations drop downs
-  document.getElementById("start").innerHTML = stationsList;
-  document.getElementById("dest").innerHTML = stationsList;
+    allMarks.push(marker);
+    allStatNums.push(station.number);
+    });
 
-});
+
+    closestFive = [];
+    closestFiveStatNums = [];
+    var closestDists = [];
+    var allDists = [];
+
+    for (var j=0; j<allMarks.length; j++) {
+      var dist = google.maps.geometry.spherical.computeDistanceBetween(markerArray[0].position, allMarks[j].position);
+      allDists.push(dist);
+    }
+
+    for (var h=0; h<5; h++) {
+      closestFive.push(allMarks[h]);
+      closestFiveStatNums.push(allStatNums[h]);
+      closestDists.push(allDists[h]);
+    }
+    for (var k=5; k<allDists.length; k++) {
+      if (allDists[k] < Math.max(...closestDists)) {
+        closestFive.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFive.push(allMarks[k]);
+        closestFiveStatNums.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFiveStatNums.push(allStatNums[k]);
+        closestDists.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestDists.push(allDists[k]);
+      }
+    }
+
+
+
+    closestFive2 = [];
+    closestFiveStatNums2 = [];
+    var closestDists2 = [];
+    var allDists2 = [];
+
+    for (var j=0; j<allMarks.length; j++) {
+      var dist2 = google.maps.geometry.spherical.computeDistanceBetween(markerArray[1].position, allMarks[j].position);
+      allDists2.push(dist2);
+    }
+
+    for (var h=0; h<5; h++) {
+      closestFive2.push(allMarks[h]);
+      closestFiveStatNums2.push(allStatNums[h]);
+      closestDists2.push(allDists2[h]);
+    }
+    for (var k=5; k<allDists2.length; k++) {
+      if (allDists2[k] < Math.max(...closestDists2)) {
+        closestFive2.splice(closestDists2.indexOf(Math.max(...closestDists2)), 1);
+        closestFive2.push(allMarks[k]);
+        closestFiveStatNums2.splice(closestDists2.indexOf(Math.max(...closestDists2)), 1);
+        closestFiveStatNums2.push(allStatNums[k]);
+        closestDists2.splice(closestDists2.indexOf(Math.max(...closestDists2)), 1);
+        closestDists2.push(allDists2[k]);
+      }
+    }
+
+
+    fetchPredBikes(closestFiveStatNums, closestFiveStatNums2, dayIn, hourIn).then(ans => {
+      chosenStat = closestFive[ans[0]];
+      chosenStat2 = closestFive2[ans[1]];
+      chosenStations.push(chosenStat);
+      chosenStations.push(chosenStat2);
+      displayRecRoute(directionsService, directionsRenderer, chosenStations);
+    });
+    if (count == 0) {
+      firstFive = closestFive;
+    }
+    count++;
+  });
+}
+
+
+// async function to get predicted bikes and stands, return numbers for largest
+async function fetchPredBikes(numArray, numArray2, day, hour) {
+  const [first, second, third, fourth, fifth, first2, second2, third2, fourth2, fifth2] = await Promise.all([
+    fetch("/predictBikes/" + numArray[0] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[1] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[2] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[3] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[4] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[0] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[1] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[2] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[3] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[4] + "/" + day + "/" + hour),
+  ]);
+  const firstNum = await first.text();
+  const secondNum = await second.text();
+  const thirdNum = await third.text();
+  const fourthNum = await fourth.text();
+  const fifthNum = await fifth.text();
+  const firstNum2 = await first2.text();
+  const secondNum2 = await second2.text();
+  const thirdNum2 = await third2.text();
+  const fourthNum2 = await fourth2.text();
+  const fifthNum2 = await fifth2.text();
+
+  const predArray = [parseFloat(firstNum), parseFloat(secondNum), parseFloat(thirdNum), parseFloat(fourthNum), parseFloat(fifthNum)];
+  const predArray2 = [parseFloat(firstNum2), parseFloat(secondNum2), parseFloat(thirdNum2), parseFloat(fourthNum2), parseFloat(fifthNum2)];
+
+  var largestIndex = 0;
+  for (var q=0; q<5; q++) {
+    if (predArray[q]>predArray[largestIndex]) {
+      largestIndex = q;
+    }
+  }
+  var largestIndex2 = 0;
+  for (var p=0; p<5; p++) {
+    if (predArray2[p]>predArray2[largestIndex]) {
+      largestIndex2 = p;
+    }
+  }
+  var outArray = [largestIndex, largestIndex2];
+  return outArray;
+}
+
+
 
 // function to display the selected route on the map
 function displayRoute(directionsService, directionsRenderer) {
@@ -95,10 +380,29 @@ function displayRoute(directionsService, directionsRenderer) {
     });
 }
 
+
+// function to display the recommended route on the map
+function displayRecRoute(directionsService, directionsRenderer, chosenStations) {
+  var recStart = chosenStations[0].position;
+  var recDest = chosenStations[1].position;
+
+  directionsService.route({
+      origin: recStart,
+      destination: recDest,
+      travelMode: 'BICYCLING'
+    }, function(response, status) {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(response);
+      } else {
+        window.alert('Oops, ' + status);
+      }
+    });
+}
+
 </script>
 
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoy1x8NH5BZFhA86GFgJk7tFyrnPhGbhw&callback=initMap&libraries=&v=weekly"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoy1x8NH5BZFhA86GFgJk7tFyrnPhGbhw&map_ids=ceb62d3e5dc52a3&callback=initMap&libraries=&v=weekly"
       async>
 </script>
 

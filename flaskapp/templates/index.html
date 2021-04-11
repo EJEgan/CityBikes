@@ -4,81 +4,68 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Bike Curious Homepage - In Development</title>
+  <title>Curious Bikes</title>
+    <link rel="icon" href="static/images/bike.png" type="image/png">
   <meta name="description" content="index.html">
   <meta name="author" content="BikeCurious">
 
   <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
 
+
 </head>
 
-<body>
-  <p> Hello {{ name }}</p>
-
-  <div id="map"></div>
-
-<script>
-let map;
-
-function initMap() {
-
-  // fetching the static data
-  fetch("/stations").then(response => {
-      return response.json();
-      }).then(data => {
-      console.log("data ", data);
-
-  // fetching the available bikes data
-  fetch("/bikes").then(bikeResponse => {
-      return bikeResponse.json();
-      }).then(bikeData => {
-      console.log("bikeData ", bikeData);
+<body class="body">
 
 
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 53.349804, lng: -6.260310 },
-    zoom: 13,
-    });
+  <div class="body_content">
+ <!--  divs for page navigation-->
+  <div id="navigation">
+      <a href="/"> <img id="logo" src="static/images/white_grey_dublinbikes.png"></a>
 
-  // iterating over each station
-  data.forEach(station => {
+  <!--  <div id="homenav">
+      <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+    </div>-->
 
-    var contentString;
-    // iterating over the availability data and building the content for the info window
-    bikeData.forEach(bikeStation => {
-      if (station.name == bikeStation.StationName) {
-        contentString = `${bikeStation.StationName} Avail Stands: ${bikeStation.AvailableBikeStands} Avail Bikes: ${bikeStation.AvailableBikes}`;
-        }
-      });
+    <div id="infonav">
+      <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
+    </div>
 
-    // info window for each marker
-    const infowindow = new google.maps.InfoWindow({
-      content: contentString,
-    });
+    <div id="routenav">
+      <a id="routelink" href="{{ url_for('route_planner') }}">Start your journey</a>
+    </div>
+  </div>
 
-    // adding the markers
-    const marker = new google.maps.Marker({
-      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
-      map: map,
-    });
 
-    // event handler for click
-    marker.addListener("click", () => {
-      infowindow.open(map, marker);
-    });
-  });
 
-    }).catch(err => {
-      console.log("OOPS!", err);
-  });
-  });
-}
-  </script>
 
- <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNMDKUUBsPVblrArwU5AIKEt8ZirRosf4&callback=initMap&libraries=&v=weekly"
-      async>
-</script>
+    <div class="row">
+
+        <div class="column_smaller">
+          <div class = "column_smaller_textbox">
+            <h2>Explore<br>Dublin <br>By Bike</h2>
+            <p>Rain,hail or snow.<br> Use our recommender system to plan your journey.</p>
+          <div class = "buttons">
+            <a href="{{ url_for('route_planner') }}"><button class="primary_button">Plan your journey ></button></a>
+            <a href="{{ url_for('info_page') }}"><button class="secondary_button">See all stations ></button></a>
+          </div>
+          </div>
+        </div>
+
+
+    <div class="column_larger">
+      <div class = "column_larger_textbox">
+      <img src="/static/images/new_transparent.png" alt="Homepage image">
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+</div>
 
 </body>
 </html>

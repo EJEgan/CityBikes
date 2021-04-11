@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="static/images/bike.png" type="image/png">
+
+    <title>Curious Bikes</title>
+    <meta name="description" content="info.html">
+    <meta name="author" content="BikeCurious">
+
+    <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Space+Grotesk:wght@300&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        function initCharts(){
+            // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(initMap);
+        }
+
+
+
+
+    </script>
+</head>
+<body>
+
+<div class="body_content">
+
+<!-- divs for page navigation -->
+  <div id="navigation">
+      <a href="/"><img id="logo" src="static/images/white_grey_dublinbikes.png"></a>
+
+    <div id="homenav">
+      <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
+    </div>
+
+  <!--  <div id="infonav">
+      <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
+    </div>-->
+
+    <div id="routenav">
+      <a id="routelink" href="{{ url_for('route_planner') }}">Start your journey</a>
+    </div>
+  </div>
+
+    <div class="wrapper">
+        <div class="weather_widget">
+        <div id="description"></div>
+        <h1 id="temp"></h1>
+    <!--
+        <div id="location"></div>
+    -->
+            <div id="icon"></div>
+        </div>
+
+
+  <div class="select_instruct">
+<!--
+      <h3>Select a station to view <br>bike and stand <br>availability:</h3>
+-->
+      <h3>Current bike & stand availability:</h3>
+      <h2>Select a station to view average availability by day/time.</h2>
+  </div>
+
+         </div>
+
+
+
+
+
+</div>
+
+<div id="charts_div" style="display:none">
+    <div id="chartExplainer" style="display:none"> </div>
+      <div id="charts" style="display:none">
+        <div id="chart1"><canvas id="canvasWeek"></canvas></div>
+        <div id="chart2"> <canvas id="canvasHour"></canvas></div>
+      </div>
+</div>
+
+<div id="map"></div>
+
+
+
+
+
+
+
+<script>
+
+
+
+//WEATHER WIDGET
+
+//Reference: https://codepen.io/mattfroese/pen/WaeYQV
+    const key = 'c9c399bd5013dcecd1eb42137fcce7af';
+if(key=='') document.getElementById('temp').innerHTML = ('Error loading weather data.');
+
+function weatherBallon( cityID ) {
+	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + cityID+ '&appid=' + key)
+	.then(function(resp) { return resp.json() }) // Convert data to json
+	.then(function(data) {
+		drawWeather(data);
+		console.log(data);
+	})
+	.catch(function() {
+		// catch any errors
+	});
+
+
+}
+function drawWeather( d ) {
+  var celcius = Math.round(parseFloat(d.main.temp)-273.15);
+	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+  var description = d.weather[0].description;
+  var icon_var = d.weather[0].icon;
+  var icon = 'http://openweathermap.org/img/w/'+icon_var+'.png'
+
+  var icon = '<img src=\'http://openweathermap.org/img/w/'+icon_var+'.png\'>'
+
+	document.getElementById('description').innerHTML = description;
+	document.getElementById('temp').innerHTML = celcius + '&deg;';
+	//document.getElementById('location').innerHTML = d.name;
+	document.getElementById('icon').innerHTML = icon;
+
+  if( description.indexOf('rain') > 0 ) {
+  	document.body.className = 'rainy';
+  } else if( description.indexOf('cloud') > 0 ) {
+  	document.body.className = 'cloudy';
+  } else if( description.indexOf('sunny') > 0 ) {
+  	document.body.className = 'sunny';
+  } else {
+  	document.body.className = 'clear';
+  }
+}
+window.onload = function() {
+	weatherBallon( 2964574 );
+}
+
+
+
+
+//MAP
+
+
+let map;
+
+function initMap() {
+
+  // fetching the static data
+  fetch("/stations").then(response => {
+      return response.json();
+      }).then(data => {
+      console.log("data ", data);
+
+  // fetching the available bikes data
+  fetch("/bikes").then(bikeResponse => {
+      return bikeResponse.json();
+      }).then(bikeData => {
+      console.log("bikeData ", bikeData);
+
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 53.349804, lng: -6.260310 },
+    zoom: 14,
+    });
+
+  // iterating over each station
+  data.forEach(station => {
+
+    var contentString;
+
+    var stationData;
+
+    // iterating over the availability data and building the content for the info window
+    bikeData.forEach(bikeStation => {
+      if (station.name == bikeStation.StationName) {
+        stationData = bikeStation;
+        contentString = `${bikeStation.StationName} Avail Stands: ${bikeStation.AvailableBikeStands} Avail Bikes: ${bikeStation.AvailableBikes}`;
+        }
+      });
+
+    // Default marker color orange
+    var color = "ff8872";
+
+
+
+    // make colour of the marker green
+    if (stationData["AvailableBikes"] > 10) {
+        color = "D0E6A5";
+        // make colour of the marker grey
+    } else if (stationData["AvailableBikes"] < 5) {
+        color = "c9bbc8";
+    }
+
+
+    // info window for each marker
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString,
+    });
+
+
+    let url = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|";
+    url += color;
+
+    let marker = new google.maps.Marker({
+        map: map,
+        position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
+        icon: {
+          url: url
+        }
+    });
+
+    // event handler for click
+    marker.addListener("click", () => {
+      infowindow.open(map, marker);
+        chartWeekly(station.number);
+        console.log('now to chart hourly with' + station.number);
+        chartHourly(station.number);
+
+    //make divs visible
+    document.getElementById( 'chartExplainer' ).style.display = 'block';
+
+    });
+  });
+
+    }).catch(err => {
+      console.log("OOPS!", err);
+  });
+  });
+}
+
+function getDayString(number){
+
+        var DaysOfWeek = new Array(7);
+        DaysOfWeek[0] = "Sunday";
+        DaysOfWeek[1] = "Monday";
+        DaysOfWeek[2] = "Tuesday";
+        DaysOfWeek[3] = "Wednesday";
+        DaysOfWeek[4] = "Thursday";
+        DaysOfWeek[5] = "Friday";
+        DaysOfWeek[6] = "Saturday";
+
+        return DaysOfWeek[number];
+}
+
+function chartWeekly(StationNumber){
+    //Called when user clicks on marker
+    // Draws charts at bottom of page
+    fetch("/chartW/" + StationNumber).then(response => {
+        return response.json();
+    }).then(data =>{
+            console.log(data);
+
+        // Chartist
+        // Set up lists to capture bikes & days
+        var days = [];
+        var bikes = [];
+        data.forEach(x => {
+            days.push(x.DayOfWeek);
+            bikes.push(x.AvailableBikes);
+        })
+        // Get the string for each day from its int value
+        days.forEach((value, index) => {
+            days[index] = getDayString(value);
+        })
+        console.log(days);
+        console.log(bikes);
+        // Draw chart
+        var ctx = document.getElementById("canvasHour").getContext('2d');
+        var canvas = new Chart(ctx, {
+            type: 'bar',
+
+            data: {
+                labels: days,
+                datasets: [{
+                    label: "Daily Average Availability",
+                    backgroundColor: 'rgb(29, 176, 229)',
+                    borderColor: 'rgb(29,176,229)',
+                    data: bikes
+                }]
+            },
+
+            options: {
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(109, 28, 169)'
+                    }
+                }
+            }
+
+        });
+
+    });
+}
+
+function chartHourly(StationNumber){
+        // Called when user clicks on marker
+    // Draws charts at bottom of page
+    fetch("/chartH/" + StationNumber).then(response => {
+        return response.json();
+    }).then(data =>{
+            console.log(data);
+
+        // Chartist
+        var today = new Date();
+        var todayNum = today.getDay();
+        //Calls getDayString to return word for day of week
+        var dayString = getDayString(todayNum);
+
+        // Set up lists to catch hours & bikes
+        // Will be formatted in such a way as to work 'round the bend', i.e. excluding our downtime 1-6am
+        var lateHours = [];
+        var earlyHours = [];
+        var lateBikes = [];
+        var earlyBikes = []
+        data.forEach(x => {
+         if (x.Hour <= 1){
+             earlyHours.push(x.Hour);
+             earlyBikes.push(x.AvailableBikes);
+        }else if (x.Hour > 1 && x.Hour < 6){
+            }
+            //pass
+            else{
+            lateHours.push(x.Hour);
+            lateBikes.push(x.AvailableBikes);
+            }
+        })
+        // finalize variables into hours and bikes in right order
+        var hours = lateHours.concat(earlyHours);
+        var bikes = lateBikes.concat(earlyBikes);
+        console.log(hours);
+        console.log(bikes);
+        // Chartist draw
+        var ctx = document.getElementById("canvasWeek").getContext('2d');
+        var canvas = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hours,
+                datasets: [{
+                    label: "Average Bike Availability on a " + dayString,
+                    backgroundColor: 'rgb(29, 176, 229)',
+                    borderColor: 'rgb(29,176,229)',
+                    data: bikes
+                }]
+            },
+
+            options: {
+
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: 'rgb(109, 28, 169)'
+                    }
+                }
+            }
+
+        });
+
+        var now = new Date();
+        var currentHour = now.getHours()
+        var sum = 0;
+        var soonList = [];
+        data.forEach(x =>{
+            if (x.Hour == currentHour || x.Hour ==currentHour + 1){
+                sum += x.AvailableBikes;
+                soonList.push(x.AvailableBikes);
+            }
+        })
+        console.log(average);
+        console.log(sum);
+
+
+        var average = Math.round(sum/2);
+        var chartExplainer = document.getElementById("chartExplainer");
+
+        while (chartExplainer.firstChild){
+            chartExplainer.removeChild(chartExplainer.firstChild);
+        }
+        chartExplainer.textContent += "On average, there's usually " + average + " bikes available at your selected station at this time!"
+        if (soonList[0] > soonList[1] && soonList[1] < 4){
+            chartExplainer.textContent += "You might want to consider a nearby stand instead, as the number of bikes here is usually quite low within the next hour"
+        }
+
+
+        //Display nivs
+        document.getElementById("charts_div").style.display='block';
+        document.getElementById("chartExplainer").style.display='block';
+        document.getElementById("charts").style.display='block';
+    });
+
+}
+
+  </script>
+
+ <script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNMDKUUBsPVblrArwU5AIKEt8ZirRosf4&callback=initCharts&libraries=&v=weekly"
+      async>
+</script>
+
+
+
+
+</body>
+
+</html>

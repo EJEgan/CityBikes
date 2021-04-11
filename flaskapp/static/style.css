@@ -1,13 +1,396 @@
 /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-#map {
-  height: 100%;
-}
+
 
 /* Optional: Makes the sample page fill the window. */
 html,
 body {
   height: 100%;
+  background-image: url("/static/images/body_background.png");
+  background-size: 100%;
+  background-position:top left;
+  background-repeat: no-repeat;
+  font-family: 'Lato', sans-serif;
   margin: 0;
   padding: 0;
+  color:black;
 }
+
+
+.body{
+    background-image: url("/static/images/body_background.png");
+    font-family: 'Lato', sans-serif;;
+}
+
+.body_content{
+    margin-left:13%;
+}
+
+/*#navigation {
+    background-color: #166974;
+    padding: 4rem 0 4rem 0;
+    height: auto;
+    width: 100%;
+    color:white;
+}*/
+
+#logo{
+    margin-left:2rem;
+    padding: 3rem 3rem 3rem 0;;
+    height: 6rem;
+/*
+    width: 15%;
+*/
+    margin: -2rem 0 0 2rem;
+}
+
+#homenav,
+#infonav,
+#routenav {
+  display: block;
+   text-align: right;
+  float: right;
+  background-color: none;
+  height:2rem;
+  color: purple;
+  overflow: hidden;
+  padding: 2rem 2rem 0 1rem;*/
+}
+
+#routelink {
+    color:grey;
+    font-border:#34166d;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+#homelink, #infolink{
+    color:#34166d;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+
+/*#homelink > a,
+#infolink > a,
+/*#routelink > a{
+    color:white;
+    text-decoration: none;
+}*/
+
+#homenav > a:hover, #infonav > a:hover, #routenav > a:hover{
+    color:#ff9632;
+}*/
+
+
+
+
+
+/* HEADER */
+
+/* Create two equal columns that floats next to each other */
+.column {
+  flex: 50%;
+  /*background-color:pink;*/
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.column_smaller {
+  flex: 50%;
+  /*background-color:pink;*/
+  margin-left: 0rem;
+  margin-right: 0rem;
+  height:50rem;
+}
+
+.column_larger {
+  flex: 60%;
+  /*background-color:pink;*/
+  margin-left: 0rem;
+  margin-right: 0rem;
+  height:50rem;
+}
+
+
+
+/* Clear floats after the columns */
+.row{
+     display: flex;
+     height: 30%;
+     margin-bottom:20rem;
+
+}
+
+.column_smaller{
+    height:50%;
+    }
+
+.column_larger{
+    height:50%;
+    }
+
+
+/* TEXT INSIDE COLUMNS */
+
+.column_smaller_textbox>h2{
+    /*background-color:blue;*/
+    color:dark-grey;
+    font-size: 500%;
+}
+
+.column_smaller_textbox>p{
+    font-size: 150%;
+}
+
+.column_larger_textbox>h2{
+    background-color:blue;
+    color:green;
+    font-size: 500%;
+}
+
+
+.column_larger_textbox>img{
+    margin-top: 5rem;
+    max-width:100%
+
+}
+
+
+
+header {
+    height: 600px;
+    width: 100%;
+
+    background: black;
+    overflow: hidden;
+    background: #C33764;  /* fallback colour. Make sure this is just one solid colour. */
+/*
+    background: -webkit-linear-gradient(rgba(2, 0, 36, 100), rgba(0, 212, 255, 100)), url('images/dimitry-anikin-XI1yvtqKjl8-unsplash_cropped.jpg');
+*/
+    background: linear-gradient(rgba(0, 212, 255, 0.2), rgba(2, 0, 36, 0.8)), url('images/dimitry-anikin-XI1yvtqKjl8-unsplash_cropped.jpg'); }
+
+
+.hero-header-text{
+    color:purple;
+    text-align: left;
+    margin: 2rem;
+    font-size: 2rem;
+}
+
+
+#select_instruct{
+    margin: 3rem;
+    width: 90%;
+    padding:1rem 1rem 0.5rem 1rem;
+    font-size: 2rem;
+    color: black;
+/*
+    background-color:#b2b2b0;
+*/
+    /*opacity: 0.5;*/
+
+}
+
+.select_instruct>h3{
+    margin: 0rem;
+    width: 90%;
+    padding:1rem 1rem 0.5rem 1rem;
+    font-size: 2rem;
+    color: white;
+/*
+    background-color:#b2b2b0;
+*/
+    /*opacity: 0.5;*/
+
+}
+
+
+select_instruct>h2{
+    margin-left:2rem;
+}
+
+.h3{
+    color: black;
+    opacity: 1;
+}
+#charts_div{
+/*    background-color: red;*/
+
+}
+
+#chartExplainer{
+    background-color: rgba(80, 15, 158, 0.8);
+/*
+    display: none;
+*/
+    width: 30%;
+    margin: 2rem 0 1rem 13%;
+    padding: 2rem;
+    font-size:1.5rem;
+    color:orange;
+    margin-right:0;
+}
+
+#charts{
+    width:30%;
+    float:right;
+    margin-right:2rem;
+}
+
+/*#canvasHour{
+    display: none;
+}
+
+#canvasWeek{
+    display: none;
+}*/
+
+/*#chart1{
+    width:50%;
+    float: left;
+}
+
+#chart2{
+    width:50%;
+    float: right;
+}*/
+
+
+/* BUTTONS */
+.primary_button{
+    display:inline-block;
+    padding:1em 3.2em;
+    margin:0 0.3em 0.3em 0;
+    border-radius:2em;
+    border: #3e4cb5;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#FFFFFF;
+    background-color:#3e4cb5;
+    text-align:center;
+    transition: all 0.2s;
+}
+
+.primary_button:hover{
+    background-color:grey;
+
+}
+
+
+.secondary_button{
+    display:inline-block;
+    padding:1em 3.2em;
+    margin:0 0.3em 0.3em 0;
+    border-radius:2em;
+    border: #3e4cb5;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#3e4cb5;
+    background-color:white;
+    text-align:center;
+    transition: all 0.2s;
+}
+
+.secondary_button:hover{
+    background-color:#3e4cb5;
+    color:grey;
+
+}
+
+
+.buttons{
+    border-radius: 90%;
+
+}
+
+
+#map {
+  height: 60%;
+  width: 86%;
+  margin: 0rem 3rem 3rem 13%;
+  border: 6px solid z;
+  box-shadow:
+  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+  0 12.5px 10px rgba(0, 0, 0, 0.06),
+  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+  0 100px 80px rgba(0, 0, 0, 0.12)
+;
+}
+
+.wrapper{
+    margin-bottom:200px;
+
+}
+.weather_widget{
+    float:right;
+    postion:block;
+    background-color: rgba(80, 15, 158, 0.4);
+    border-radius:.2rem;
+    width: 5rem;
+    height: 7rem;
+    padding:.5rem 1rem 2rem 1rem;
+    margin:0 4rem 2rem 2rem;
+    color:white;
+    font-weight:bold;
+}
+
+
+#description,#temp,#icon {
+    position:block;
+    color:white;
+    opacity: 1;
+    color:white
+    font-weight:bold;
+    font-size: 20px;
+    margin-right:400px;
+}
+
+footer{
+    background-color:#3e4cb5;
+    margin-bottom:0rem;
+}
+
+
+
+/*#homenav {
+  height: 5%;
+  width: 10%;
+  border: 6px solid #FF5A5F;
+  font-size: 150%;
+  margin: 1%;
+}
+
+#routenav {
+  height: 5%;
+  width: 10%;
+  border: 6px solid #5398BE;
+  font-size: 150%;
+  margin: 1%;
+}*/
+
+/*#homenav:hover,
+#routenav:hover,
+a:hover {
+  background-color: lightgray;
+}
+
+a {
+  height: 100%;
+  width: 100%;
+  padding: 2%;
+}
+
+#homelink {
+  color: #FF5A5F;
+}
+
+#routelink {
+  color: #5398BE;
+}*/
