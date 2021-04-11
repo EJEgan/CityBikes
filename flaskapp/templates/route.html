@@ -71,8 +71,6 @@ Let our recommender system make life a little easier for you!<br><br>
 
         <label for="time_select">Choose a time:</label>
         <select id="time_select">
-            <option value="0">0:00</option>
-            <option value="1">1:00</option>
             <option value="6">6:00</option>
             <option value="7">7:00</option>
             <option value="8">8:00</option>
@@ -93,7 +91,7 @@ Let our recommender system make life a little easier for you!<br><br>
             <option value="23">23:00</option>
         </select><br><br>
 
-        <button onclick="">Recommend Route</button>
+        <button onclick="recStations()">Recommend Route</button>
 
     </div>
 
@@ -116,11 +114,22 @@ function loadFunction() {
 
 let map;
 let markerArray = [];
+let closestFive = [];
+let closestFive2 = [];
+let closestFiveStatNums = [];
+let closestFiveStatNums2 = [];
+let firstFive = [];
+let firstFive2 = [];
+let chosenStations = [];
+let directionsService;
+let directionsRenderer;
+
+
 
 function initMap() {
 
-  var directionsService = new google.maps.DirectionsService;
-  var directionsRenderer = new google.maps.DirectionsRenderer;
+  directionsService = new google.maps.DirectionsService;
+  directionsRenderer = new google.maps.DirectionsRenderer;
 
   // fetching the static data
   fetch("/stations").then(response => {
@@ -200,15 +209,157 @@ function resetMarkers() {
       markerArray[i].setMap(null);
     }
     markerArray = [];
-
-    for (var l=0; l<closestFive.length; l++) {
-      closestFive[l].setMap(null);
-    }
-    for (var g=0; g<firstFive.length; g++) {
-      firstFive[g].setMap(null);
-    }
   }
 }
+
+
+// function to calculate the recommended stations
+function recStations() {
+  var count = 0;
+
+  var d = new Date();
+  var dayIn = (parseInt(document.getElementById("day_select").value) + d.getDay() + 6) % 7;
+  var hourIn = parseInt(document.getElementById("time_select").value);
+
+  var allMarks = [];
+  var allStatNums = [];
+  chosenStations = [];
+  var chosenStat;
+  var chosenStat2;
+
+  // fetching the static data
+  fetch("/stations").then(response => {
+      return response.json();
+      }).then(data => {
+      console.log("data ", data);
+
+    // iterating over each station
+    data.forEach(station => {
+
+    // adding the markers
+    const marker = new google.maps.Marker({
+      position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
+    });
+
+    allMarks.push(marker);
+    allStatNums.push(station.number);
+    });
+
+
+    closestFive = [];
+    closestFiveStatNums = [];
+    var closestDists = [];
+    var allDists = [];
+
+    for (var j=0; j<allMarks.length; j++) {
+      var dist = google.maps.geometry.spherical.computeDistanceBetween(markerArray[0].position, allMarks[j].position);
+      allDists.push(dist);
+    }
+
+    for (var h=0; h<5; h++) {
+      closestFive.push(allMarks[h]);
+      closestFiveStatNums.push(allStatNums[h]);
+      closestDists.push(allDists[h]);
+    }
+    for (var k=5; k<allDists.length; k++) {
+      if (allDists[k] < Math.max(...closestDists)) {
+        closestFive.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFive.push(allMarks[k]);
+        closestFiveStatNums.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestFiveStatNums.push(allStatNums[k]);
+        closestDists.splice(closestDists.indexOf(Math.max(...closestDists)), 1);
+        closestDists.push(allDists[k]);
+      }
+    }
+
+
+
+    closestFive2 = [];
+    closestFiveStatNums2 = [];
+    var closestDists2 = [];
+    var allDists2 = [];
+
+    for (var j=0; j<allMarks.length; j++) {
+      var dist2 = google.maps.geometry.spherical.computeDistanceBetween(markerArray[1].position, allMarks[j].position);
+      allDists2.push(dist2);
+    }
+
+    for (var h=0; h<5; h++) {
+      closestFive2.push(allMarks[h]);
+      closestFiveStatNums2.push(allStatNums[h]);
+      closestDists2.push(allDists2[h]);
+    }
+    for (var k=5; k<allDists2.length; k++) {
+      if (allDists2[k] < Math.max(...closestDists2)) {
+        closestFive2.splice(closestDists2.indexOf(Math.max(...closestDists2)), 1);
+        closestFive2.push(allMarks[k]);
+        closestFiveStatNums2.splice(closestDists2.indexOf(Math.max(...closestDists2)), 1);
+        closestFiveStatNums2.push(allStatNums[k]);
+        closestDists2.splice(closestDists2.indexOf(Math.max(...closestDists2)), 1);
+        closestDists2.push(allDists2[k]);
+      }
+    }
+
+
+    fetchPredBikes(closestFiveStatNums, closestFiveStatNums2, dayIn, hourIn).then(ans => {
+      chosenStat = closestFive[ans[0]];
+      chosenStat2 = closestFive2[ans[1]];
+      chosenStations.push(chosenStat);
+      chosenStations.push(chosenStat2);
+      displayRecRoute(directionsService, directionsRenderer, chosenStations);
+    });
+    if (count == 0) {
+      firstFive = closestFive;
+    }
+    count++;
+  });
+}
+
+
+// async function to get predicted bikes and stands, return numbers for largest
+async function fetchPredBikes(numArray, numArray2, day, hour) {
+  const [first, second, third, fourth, fifth, first2, second2, third2, fourth2, fifth2] = await Promise.all([
+    fetch("/predictBikes/" + numArray[0] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[1] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[2] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[3] + "/" + day + "/" + hour),
+    fetch("/predictBikes/" + numArray[4] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[0] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[1] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[2] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[3] + "/" + day + "/" + hour),
+    fetch("/predictStands/" + numArray2[4] + "/" + day + "/" + hour),
+  ]);
+  const firstNum = await first.text();
+  const secondNum = await second.text();
+  const thirdNum = await third.text();
+  const fourthNum = await fourth.text();
+  const fifthNum = await fifth.text();
+  const firstNum2 = await first2.text();
+  const secondNum2 = await second2.text();
+  const thirdNum2 = await third2.text();
+  const fourthNum2 = await fourth2.text();
+  const fifthNum2 = await fifth2.text();
+
+  const predArray = [parseFloat(firstNum), parseFloat(secondNum), parseFloat(thirdNum), parseFloat(fourthNum), parseFloat(fifthNum)];
+  const predArray2 = [parseFloat(firstNum2), parseFloat(secondNum2), parseFloat(thirdNum2), parseFloat(fourthNum2), parseFloat(fifthNum2)];
+
+  var largestIndex = 0;
+  for (var q=0; q<5; q++) {
+    if (predArray[q]>predArray[largestIndex]) {
+      largestIndex = q;
+    }
+  }
+  var largestIndex2 = 0;
+  for (var p=0; p<5; p++) {
+    if (predArray2[p]>predArray2[largestIndex]) {
+      largestIndex2 = p;
+    }
+  }
+  var outArray = [largestIndex, largestIndex2];
+  return outArray;
+}
+
 
 
 // function to display the selected route on the map
@@ -219,6 +370,25 @@ function displayRoute(directionsService, directionsRenderer) {
     directionsService.route({
       origin: startPos,
       destination: destPos,
+      travelMode: 'BICYCLING'
+    }, function(response, status) {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(response);
+      } else {
+        window.alert('Oops, ' + status);
+      }
+    });
+}
+
+
+// function to display the recommended route on the map
+function displayRecRoute(directionsService, directionsRenderer, chosenStations) {
+  var recStart = chosenStations[0].position;
+  var recDest = chosenStations[1].position;
+
+  directionsService.route({
+      origin: recStart,
+      destination: recDest,
       travelMode: 'BICYCLING'
     }, function(response, status) {
       if (status === 'OK') {

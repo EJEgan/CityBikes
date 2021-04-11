@@ -8,8 +8,11 @@ import json
 from datetime import datetime
 from os import path
 
-# Followed Aonghus precisely as I could, so app is the Flask name
+# app is the Flask name
 app = Flask(__name__)
+
+from joblib import load
+import pandas as pd
 
 # Homepage on first loading
 @app.route("/")
@@ -105,6 +108,91 @@ def chartHourly(StationNumber):
     hourly_df['Hour'] = hourly_df.index
     return hourly_df.to_json(orient='records')
 
+def get_Xnew(day, hour, df):
+    df['Date'] = pd.to_datetime(df['Date'])
+    df['Hour'] = df['Date'].dt.hour
+    df['DayOfWeek'] = df['Date'].dt.dayofweek
+    local_df = df.loc[(df['DayOfWeek'] == day) & (df['Hour'] == hour)]
+
+    temp = int(local_df['Temperature'].to_numpy())
+    wind = int(local_df['Windspeed'].to_numpy())
+
+    if day == 0:  # if i'ts monday
+        array = [0, 0, 0, 0, 0, 0]
+    elif day == 1:  # tuesday
+        array = [1, 0, 0, 0, 0, 0]
+    elif day == 2:  # wednesday
+        array = [0, 1, 0, 0, 0, 0]
+    elif day == 3:  # thurs
+        array = [0, 0, 1, 0, 0, 0]
+    elif day == 4:  # fri
+        array = [0, 0, 0, 1, 0, 0]
+    elif day == 5:  # sat
+        array = [0, 0, 0, 0, 1, 0]
+    else:  # sun
+        array = [0, 0, 0, 0, 0, 1]
+
+    tue = array[0]
+    wed = array[1]
+    thu = array[2]
+    fri = array[3]
+    sat = array[4]
+    sun = array[5]
+
+    X_new = pd.DataFrame({'FeelsLike': [temp], 'Windspeed': [wind], 'DayOfWeek_1.0': [tue], 'DayOfWeek_2.0': [wed],
+                          'DayOfWeek_3.0': [thu], 'DayOfWeek_4.0': [fri], 'DayOfWeek_5.0': [sat],
+                          'DayOfWeek_6.0': [sun], 'DateTime': [hour]})
+    return X_new
+
+@app.route("/predictBikes/<int:StationNumber>/<int:Day>/<int:Hour>")
+def predictBikes(StationNumber, Day, Hour):
+    print("trying to connect")
+    mydb = mysql.connector.connect(
+        host="dublinbikes.chj6z1a17hdc.us-east-1.rds.amazonaws.com",
+        user="admin",
+        passwd="Aws72gene!",
+        database='DublinBikes',
+        charset='utf8mb4',
+    )
+    #mycursor = mydb.cursor(dictionary=False)
+    print("Connected")
+    #cursor = mydb.cursor()
+
+    # Pandas read sql query
+    sql_select_Query = pd.read_sql_query("SELECT Date, Temperature, Windspeed FROM DublinBikes.WeatherForecast48Hour",
+                                         mydb)
+    # Create a dataframe with all of the rows fetches in the sql query
+    df_WF = pd.DataFrame(sql_select_Query, columns=['Date', 'Temperature', 'Windspeed'])
+
+    X_new = get_Xnew(Day, Hour, df_WF)
+    models = load('availableBikesModels.joblib')
+
+    return str(models[StationNumber].predict(X_new)[0])
+
+@app.route("/predictStands/<int:StationNumber>/<int:Day>/<int:Hour>")
+def predictStands(StationNumber, Day, Hour):
+    print("trying to connect")
+    mydb = mysql.connector.connect(
+        host="dublinbikes.chj6z1a17hdc.us-east-1.rds.amazonaws.com",
+        user="admin",
+        passwd="Aws72gene!",
+        database='DublinBikes',
+        charset='utf8mb4',
+    )
+    #mycursor = mydb.cursor(dictionary=False)
+    print("Connected")
+    #cursor = mydb.cursor()
+
+    # Pandas read sql query
+    sql_select_Query = pd.read_sql_query("SELECT Date, Temperature, Windspeed FROM DublinBikes.WeatherForecast48Hour",
+                                         mydb)
+    # Create a dataframe with all of the rows fetches in the sql query
+    df_WF = pd.DataFrame(sql_select_Query, columns=['Date', 'Temperature', 'Windspeed'])
+
+    X_new = get_Xnew(Day, Hour, df_WF)
+    models = load('availableStandsModels.joblib')
+
+    return str(models[StationNumber].predict(X_new)[0])
 
 # Just a sample static page for proof of concept
 @app.route("/about")
