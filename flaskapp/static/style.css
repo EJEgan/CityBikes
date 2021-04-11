@@ -117,7 +117,7 @@ body {
 /* Clear floats after the columns */
 .row{
      display: flex;
-     height: 10%;
+     height: 30%;
      margin-bottom:20rem;
 
 }
@@ -206,7 +206,9 @@ header {
 }
 
 
-
+select_instruct>h2{
+    margin-left:2rem;
+}
 
 .h3{
     color: black;
