@@ -273,8 +273,13 @@ function chartWeekly(StationNumber){
         console.log(days);
         console.log(bikes);
         // Draw chart
-        var ctx = document.getElementById("canvasHour").getContext('2d');
-        var canvas = new Chart(ctx, {
+        var ctx = document.getElementById("canvasWeek").getContext('2d');
+        
+        if (window.canvasWeekX){
+            window.canvasWeekX.destroy();
+        }
+        
+        window.canvasWeekX = new Chart(ctx, {
             type: 'bar',
 
             data: {
@@ -338,9 +343,14 @@ function chartHourly(StationNumber){
         var bikes = lateBikes.concat(earlyBikes);
         console.log(hours);
         console.log(bikes);
+        
+        if (window.canvasHourX){
+            window.canvasHourX.destroy();
+        }
+        
         // Chartist draw
-        var ctx = document.getElementById("canvasWeek").getContext('2d');
-        var canvas = new Chart(ctx, {
+        var ctx = document.getElementById("canvasHour").getContext('2d');
+        window.canvasHourX = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: hours,
