@@ -71,6 +71,7 @@ body {
 .journey_text{
     color:white;
     margin-left:2rem;
+    margin-right:2rem;
 }
 
 .journey_text>h1{
@@ -104,14 +105,44 @@ body {
     margin: 0 4% 0 0;
 }
 
+#day_select {
+    float: right;
+}
+
+#time_select {
+    float: right;
+}
+
+#route_button {
+    float: right;
+}
+
 .instructions{
     width:100%;
     color:black;
     margin:4rem;
     font-size:1.25rem;
-    padding: 1% 2%;
+    padding: 1% 5%;
     background-color: rgba(190, 144, 212, 0.3);
     border-radius: 10px;
+}
+
+#day_select:hover {
+    box-shadow: 0 0 10px 100px purple inset;
+    background-color:#4e2a94;
+    color:white;
+}
+
+#time_select:hover {
+    box-shadow: 0 0 10px 100px purple inset;
+    background-color:#4e2a94;
+    color:white;
+}
+
+#route_button:hover {
+    box-shadow: 0 0 10px 100px purple inset;
+    background-color:#4e2a94;
+    color:white;
 }
 
 /*.journey_dropdown>select-selected {
@@ -120,12 +151,20 @@ body {
 
 .journey_dropdown {
     text-align: center;
+    background-color: rgba(190, 144, 212, 0.3);
+    border-radius: 10px;
+    padding: 4px 0;
 }
 
-.journey_dropdown>select:hover {
+.journey_dropdown>select:hover, #jdspace>select:hover {
     box-shadow: 0 0 10px 100px purple inset;
     background-color:#4e2a94;
     color:white;
+}
+
+#jdspace {
+  padding: 0 10px 0 500px;
+  float: left;
 }
 
 #start{

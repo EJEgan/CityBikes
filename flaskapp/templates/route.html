@@ -33,8 +33,10 @@ Let our recommender system make life a little easier for you!<br><br>
     We will calculate the nearest station with the best available bikes.</p>-->
 
 <div class="journey_dropdown">
+    <div id="jdspace">
 <label for="start">Departure Address:</label>
 <select id="start"></select>
+        </div>
 
 <label for="dest">Destination Address:</label>
 <select id="dest"></select>
@@ -60,14 +62,14 @@ Let our recommender system make life a little easier for you!<br><br>
             <p>3. Double click to choose your starting point.</p>
             <p>4. Double click again to choose your destination.</p>
             <p>5. Click "Recommend Route" for the best route available!
-            <button onclick="recStations()">Recommend Route</button></p>
+            <button id="route_button" onclick="recStations()">Recommend Route</button></p>
         </div>
 
 
     </div>
 
 
-    <div id="map" style="height: 600px"></div>
+    <div id="map" style="height: 592px"></div>
 
     </div>
 
