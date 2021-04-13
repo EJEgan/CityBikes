@@ -76,6 +76,8 @@
 
 </div>
 
+<div id = 'stationNameDiv' style="display:none"></div>
+    
 <div id="charts_div" style="display:none">
     <div id="chartExplainer" style="display:none"> </div>
       <div id="charts" style="display:none">
@@ -223,8 +225,10 @@ function initMap() {
         chartWeekly(station.number);
         console.log('now to chart hourly with' + station.number);
         chartHourly(station.number);
+        document.getElementById('stationNameDiv').innerHTML = station.name;
 
     //make divs visible
+    document.getElementById( 'stationNameDiv' ).style.display = 'block';
     document.getElementById( 'chartExplainer' ).style.display = 'block';
 
     });
@@ -258,7 +262,7 @@ function chartWeekly(StationNumber){
     }).then(data =>{
             console.log(data);
 
-        // Chartist
+        // Chart
         // Set up lists to capture bikes & days
         var days = [];
         var bikes = [];
@@ -275,6 +279,7 @@ function chartWeekly(StationNumber){
         // Draw chart
         var ctx = document.getElementById("canvasWeek").getContext('2d');
         
+        // If global variable chart already exists, destroy so we can create a new one
         if (window.canvasWeekX){
             window.canvasWeekX.destroy();
         }
@@ -293,11 +298,40 @@ function chartWeekly(StationNumber){
             },
 
             options: {
-                legend: {
-                    display: true,
-                    labels: {
+                title : {
+                        display: true,
+                        text: 'Daily Average Bike Availability',
                         fontColor: 'rgb(109, 28, 169)'
-                    }
+                    },
+                scales : {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Day of Week',
+                            fontColor: 'rgb(29, 176, 229)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: 'orange',
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Available Bikes',
+                            fontColor: 'rgb(29, 176, 229)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: '#FF0000',
+                        }
+                    }],
+                    
+                },
+                legend: {
+                    display: false,
                 }
             }
 
@@ -325,7 +359,7 @@ function chartHourly(StationNumber){
         var lateHours = [];
         var earlyHours = [];
         var lateBikes = [];
-        var earlyBikes = []
+        var earlyBikes = [];
         data.forEach(x => {
          if (x.Hour <= 1){
              earlyHours.push(x.Hour);
@@ -348,7 +382,7 @@ function chartHourly(StationNumber){
             window.canvasHourX.destroy();
         }
         
-        // Chartist draw
+        // Chart draw
         var ctx = document.getElementById("canvasHour").getContext('2d');
         window.canvasHourX = new Chart(ctx, {
             type: 'line',
@@ -363,12 +397,40 @@ function chartHourly(StationNumber){
             },
 
             options: {
-
-                legend: {
-                    display: true,
-                    labels: {
+                title : {
+                        display: true,
+                        text: "Today's Average Bike Availability",
                         fontColor: 'rgb(109, 28, 169)'
-                    }
+                    },
+                scales : {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Hour of Day',
+                            fontColor: 'rgb(29, 176, 229)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: 'orange',
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Available Bikes',
+                            fontColor: 'rgb(29, 176, 229)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: '#FF0000',
+                        }
+                    }],
+                    
+                },
+                legend: {
+                    display: false,
                 }
             }
 
@@ -394,7 +456,7 @@ function chartHourly(StationNumber){
         while (chartExplainer.firstChild){
             chartExplainer.removeChild(chartExplainer.firstChild);
         }
-        chartExplainer.textContent += "On average, there's usually " + average + " bikes available at your selected station at this time!"
+        chartExplainer.textContent += "On average, there's usually " + average + " bikes available here at this time!"
         if (soonList[0] > soonList[1] && soonList[1] < 4){
             chartExplainer.textContent += "You might want to consider a nearby stand instead, as the number of bikes here is usually quite low within the next hour"
         }
