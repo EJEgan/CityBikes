@@ -219,6 +219,22 @@ select_instruct>h2{
 
 }
 
+#stationNameDiv{
+    background-color: rgba(80, 15, 158, 0.8);
+/*
+    display: none;
+*/
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+    width: 30%;
+    margin: 2rem 0 1rem 13%;
+    padding: 2rem;
+    font-size:1.5rem;
+    color:orange;
+    margin-right:0;
+}
+
 #chartExplainer{
     background-color: rgba(80, 15, 158, 0.8);
 /*
