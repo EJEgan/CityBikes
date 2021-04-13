@@ -51,29 +51,20 @@ Let our recommender system make life a little easier for you!<br><br>
 
 
         <div class="instructions">
-    <p>How to use:</p>
-            <p>Step 1: </p>
-            <p>Step 2:</p>
-            <p>Step 3:</p>
+            <p><b>Find Your Best Route:</b></p>
+            <p>1. Choose a day:
+            <select id="day_select" onchange="timeChange()">
+              <option value="0">Today</option>
+              <option value="1">Tomorrow</option>
+            </select></p>
+            <p>2. Choose a time:
+            <select id="time_select"></select></p>
+            <p>3. Double click to choose your starting point.</p>
+            <p>4. Double click again to choose your destination.</p>
+            <p>5. Click "Recommend Route" for the best route available!
+            <button onclick="recStations()">Recommend Route</button></p>
         </div>
 
-
-    </div>
-
-
-    <div id="recommend_input">
-
-        <label for="day_select">Choose a day:</label>
-        <select id="day_select" onchange="timeChange()">
-            <option value="0">Today</option>
-            <option value="1">Tomorrow</option>
-        </select><br><br>
-
-        <label for="time_select">Choose a time:</label>
-        <select id="time_select">
-        </select><br><br>
-
-        <button onclick="recStations()">Recommend Route</button>
 
     </div>
 
