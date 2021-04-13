@@ -32,22 +32,20 @@ Let our recommender system make life a little easier for you!<br><br>
     Enter your departure and arrival details - our system takes care of the rest.<br>
     We will calculate the nearest station with the best available bikes.</p>-->
 
-<h3>Select your start and end point to begin:</h3>
+<div class="journey_dropdown">
+<label for="start">Departure Address:</label>
+<select id="start"></select>
+
+<label for="dest">Destination Address:</label>
+<select id="dest"></select>
+        </div>
 
 </div>
 
 
-<div class="journey_selection">
-    <div class="journey_dropdowns">
-  <div class="journey_dropdown">
-<label for="start">Departure Address:</label>
-<select id="start"></select>
-      </div>
+<div class="instruc_map">
+    <div class="instruc_div">
 
-    <div class="journey_dropdown">
-<label for="dest">Destination Address:</label>
-<select id="dest"></select>
-        </div>
 
 
         <div class="instructions">
@@ -69,7 +67,7 @@ Let our recommender system make life a little easier for you!<br><br>
     </div>
 
 
-    <div id="map" style="height: 800px"></div>
+    <div id="map" style="height: 600px"></div>
 
     </div>
 

@@ -77,7 +77,7 @@ body {
     color:#ff8872;
 }
 
-.journey_selection{
+.instruc_map{
     display: flex;
    /* margin-left:2rem;
     background-color: purple;
@@ -99,8 +99,8 @@ body {
 }
 
 
-.journey_dropdowns{
-    width:20%;
+.instruc_div{
+    width:25%;
 }
 
 .instructions{
@@ -113,6 +113,10 @@ body {
 /*.journey_dropdown>select-selected {
     color:purple;
 }*/
+
+.journey_dropdown {
+    text-align: center;
+}
 
 .journey_dropdown>select:hover {
     box-shadow: 0 0 10px 100px purple inset;
