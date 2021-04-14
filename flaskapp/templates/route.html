@@ -215,6 +215,7 @@ function resetMarkers() {
 
 // function to calculate the recommended stations
 function recStations() {
+if (markerArray.length == 2) {
   var count = 0;
 
   var d = new Date();
@@ -378,6 +379,7 @@ function displayRoute(directionsService, directionsRenderer) {
         window.alert('Oops, ' + status);
       }
     });
+}
 }
 
 
