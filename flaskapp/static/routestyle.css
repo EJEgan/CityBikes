@@ -114,7 +114,8 @@ body {
 }
 
 #route_button {
-    float: right;
+    margin: 0 30%;
+    padding: 5px 10px;
 }
 
 .instructions{
