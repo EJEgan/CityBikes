@@ -180,7 +180,7 @@ header {
 
 
 #select_instruct{
-    margin: 3rem;
+    margin: 3rem 3rem 0rem 3rem;
     width: 90%;
     padding:1rem 1rem 0.5rem 1rem;
     font-size: 2rem;
@@ -214,9 +214,11 @@ select_instruct>h2{
     color: black;
     opacity: 1;
 }
+
 #charts_div{
 /*    background-color: red;*/
-
+float: left;
+width: 35%;
 }
 
 #stationNameDiv{
@@ -224,33 +226,20 @@ select_instruct>h2{
 /*
     display: none;
 */
+
     border-radius: 50%;
     text-align: center;
     font-weight: bold;
-    width: 30%;
-    margin: 2rem 0 1rem 13%;
     padding: 2rem;
+    margin: 1rem;
     font-size:1.5rem;
     color:orange;
-    margin-right:0;
+    float: center;
 }
 
-#chartExplainer{
-    background-color: rgba(80, 15, 158, 0.8);
-/*
-    display: none;
-*/
-    width: 30%;
-    margin: 2rem 0 1rem 13%;
-    padding: 2rem;
-    font-size:1.5rem;
-    color:orange;
-    margin-right:0;
-}
 
 #charts{
-    width:30%;
-    float:right;
+    float:center;
     margin-right:2rem;
 }
 
@@ -327,8 +316,9 @@ select_instruct>h2{
 
 #map {
   height: 60%;
-  width: 86%;
-  margin: 0rem 3rem 3rem 13%;
+  float: right;
+  width: 50%;
+  margin-right; 2rem;
   border: 6px solid z;
   box-shadow:
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),
@@ -341,7 +331,7 @@ select_instruct>h2{
 }
 
 .wrapper{
-    margin-bottom:200px;
+    margin-bottom:50px;
 
 }
 .weather_widget{
