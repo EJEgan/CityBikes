@@ -86,7 +86,6 @@ def write_to_historical(text):
     return
 
 #Populate both tables
-#While true
 try:
     r = requests.get(WEATHER)
     text = r.text
