@@ -146,7 +146,7 @@ header {
 }
 
 #select_instruct{
-    margin: 3rem 3rem 0rem 3rem;
+    margin: 3rem 3rem 0rem 2rem;
     width: 90%;
     padding:1rem 1rem 0.5rem 1rem;
     font-size: 2rem;
@@ -162,7 +162,7 @@ header {
 }
 
 select_instruct>h2{
-    margin-left:2rem;
+    margin-left:0rem;
 }
 
 .h3{
@@ -173,17 +173,19 @@ select_instruct>h2{
 /*CHARTS*/
 #charts_div{
 float: left;
-width: 35%;
+width: 30%;
     margin-left: 1rem;
     margin-bottom: .5rem;
+    margin-right: 1rem;
+    border-radius:.2rem;
 }
 
 #stationNameDiv{
-    background-color: rgba(80, 15, 158, 0.8);
+    background-color: rgba(80, 15, 158, 0.5);
     border-radius: .2rem;
     text-align: center;
     font-weight: bold;
-    padding: 2rem;
+    padding: .5rem 0rem .5rem 0rem;
     margin: 1rem;
     font-size:1.5rem;
     color:orange;
@@ -194,7 +196,7 @@ width: 35%;
 
 #charts{
     float:center;
-    background-color: rgba(80, 15, 158, 0.8);
+    background-color: rgba(80, 15, 158, 0.5);
 }
 
 /* BUTTONS */
