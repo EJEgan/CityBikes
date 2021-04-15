@@ -76,6 +76,7 @@ body {
 
 .journey_text>h1{
     color:#ff8872;
+    text-shadow: 1.5px 1.5px black;
 }
 
 .instruc_map{
@@ -116,11 +117,13 @@ body {
 #route_button {
     margin: 0 30%;
     padding: 5px 10px;
+    border-radius: 10px;
 }
 
 .instructions{
     width:100%;
-    color:black;
+    color:white;
+    text-shadow: 1.5px 1.5px black;
     margin:4rem;
     font-size:1.25rem;
     padding: 1% 5%;
@@ -155,6 +158,8 @@ body {
     background-color: rgba(190, 144, 212, 0.3);
     border-radius: 10px;
     padding: 4px 0;
+    color:white;
+    text-shadow: 1.5px 1.5px black;
 }
 
 .journey_dropdown>select:hover, #jdspace>select:hover {
