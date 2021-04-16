@@ -61,7 +61,7 @@ body {
 /* dropdown label style for the station select */
 .journey_text{
     color:white;
-    margin-left:2rem;
+    margin-left:3rem;
     margin-right:2rem;
 }
 
@@ -132,17 +132,41 @@ body {
 }
 
 /* changing colour of the route recommend button */
-#route_button:hover {
+/*#route_button:hover {
     box-shadow: 0 0 10px 100px purple inset;
     background-color:#4e2a94;
     color:white;
-}
+}*/
+
+#route_button{
+border-radius:2em;
+    display:inline-block;
+    padding:1em 3.2em;
+    margin:0 0.3em 0.3em 0;
+    border-radius:2em;
+    border: #3e4cb5;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#FFFFFF;
+    background-color:#3e4cb5;
+    text-align:center;
+    transition: all 0.2s;
+    }
+
+ #route_button:hover{
+    background-color:grey;
+ }
 
 /* position and style of station selection box */
 .journey_dropdown {
     text-align: center;
+    width: 73%;
+    margin-left:23rem;
     background-color: rgba(190, 144, 212, 0.3);
     border-radius: 10px;
+    text-decoration:none;
     padding: 4px 0;
     color:white;
     text-shadow: 1.5px 1.5px black;
@@ -152,16 +176,23 @@ body {
     box-shadow: 0 0 10px 100px purple inset;
     background-color:#4e2a94;
     color:white;
+    text-decoration:none;
 }
 
 /* putting space between the dropdowns */
 #jdspace {
-  padding: 0 10px 0 500px;
-  float: left;
+ /* padding: 0 10px 0 500px;
+  float: left;*/
 }
 
 #start{
     font-weight:bold;
+    margin-left:0rem;
+}
+
+#dest{
+    font-weight:bold;
+    margin-left:0rem;
 }
 
 /* styling the map div */
