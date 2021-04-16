@@ -1,8 +1,5 @@
 import mysql.connector
 import pandas as pd
-import requests
-import json
-from datetime import datetime
 
 
 print("trying to connect")
@@ -44,27 +41,6 @@ df_w_datetime = df[['DayOfWeek', 'StationNumber', 'AvailableBikes', 'AvailableBi
 
 # Save to csv file (smaller than JSON file)
 csv = df_w_datetime.to_csv("bikesDataframe.csv", index = False)
-
-#Group by Station name, day of week, time. (This will be the key for your query to the json object)
-#mean_bikes = df.groupby(["StationNumber","DayOfWeek","Time"]).mean()
-
-#Print out result
-#print(mean_bikes)
-
-
-#Save to Json file (oriented by index)
-#result = mean_bikes.to_json(r'mean_bikes.json',orient="index")
-
-
-"""BELOW IS A SAMPLE QUERY TO THE JSON OBJECT. THIS IS WHAT YOU WILL NEED ON FLASK.
- It queries the key - station, day number, time. The value to this key will be the AVERAGE available bikes
- For example, will return average bikes for Avondale Road station on day 2 at 1225
-"""
-# with open('mean_bikes.json') as json_file:
-#     data = json.load(json_file)
-#     print(data["('AVONDALE ROAD', 2, 1225)"])
-
-
 
 
 

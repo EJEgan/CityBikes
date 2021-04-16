@@ -20,83 +20,60 @@
       <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
   </div>
 
-<!--  <div id="routenav">-->
-<!--    <a id="routelink" href="{{ url_for('route_planner') }}">Route Planner</a>-->
-<!--  </div>-->
 </div>
 
+<!-- div for the header and station selection -->
 <div class="journey_text">
 <h1>Journey Recommender System - Plan your trip!</h1>
-<!--<p>Tired of leaving the house late - only to find there are no bikes or spaces left at your station?<br>
-Let our recommender system make life a little easier for you!<br><br>
-    Enter your departure and arrival details - our system takes care of the rest.<br>
-    We will calculate the nearest station with the best available bikes.</p>-->
 
-<h3>Select your start and end point to begin:</h3>
+<!-- div for station selection -->
+<div class="journey_dropdown">
 
-</div>
-
-
-<div class="journey_selection">
-    <div class="journey_dropdowns">
-  <div class="journey_dropdown">
+    <!-- div to put space between the dropdowns -->
+    <div id="jdspace">
 <label for="start">Departure Address:</label>
 <select id="start"></select>
-      </div>
+        </div>
 
-    <div class="journey_dropdown">
 <label for="dest">Destination Address:</label>
 <select id="dest"></select>
         </div>
 
+</div>
 
+<!-- divs for the instructions and map -->
+<div class="instruc_map">
+    <div class="instruc_div">
+
+
+        <!-- div to display the instructions in a box -->
         <div class="instructions">
-    <p>How to use:</p>
-            <p>Step 1: </p>
-            <p>Step 2:</p>
-            <p>Step 3:</p>
+            <p><b>Find Your Best Route:</b></p>
+
+            <p>1. Choose a day:
+            <select id="day_select" onchange="timeChange()">
+              <option value="0">Today</option>
+              <option value="1">Tomorrow</option>
+            </select></p>
+
+            <!-- time dropdown filled in by js function below -->
+            <p>2. Choose departure time:
+            <select id="time_select"></select></p>
+
+            <p>3. Double click to choose your starting point.</p>
+            <p>4. Double click again to choose your destination.</p>
+
+            <!-- js function to calculate best route runs when button is clicked -->
+            <p>5. Click "Recommend Route" for the best route available!</p>
+            <button id="route_button" onclick="recStations()">Recommend Route</button><br><br>
+            <p style="font-size: 0.8rem;">*Routes are selected based on bike and bike stand availability at each station.</p>
         </div>
 
 
     </div>
 
 
-    <div id="recommend_input">
-
-        <label for="day_select">Choose a day:</label>
-        <select id="day_select">
-            <option value="0">Today</option>
-            <option value="1">Tomorrow</option>
-        </select><br><br>
-
-        <label for="time_select">Choose a time:</label>
-        <select id="time_select">
-            <option value="6">6:00</option>
-            <option value="7">7:00</option>
-            <option value="8">8:00</option>
-            <option value="9">9:00</option>
-            <option value="10">10:00</option>
-            <option value="11">11:00</option>
-            <option value="12">12:00</option>
-            <option value="13">13:00</option>
-            <option value="14">14:00</option>
-            <option value="15">15:00</option>
-            <option value="16">16:00</option>
-            <option value="17">17:00</option>
-            <option value="18">18:00</option>
-            <option value="19">19:00</option>
-            <option value="20">20:00</option>
-            <option value="21">21:00</option>
-            <option value="22">22:00</option>
-            <option value="23">23:00</option>
-        </select><br><br>
-
-        <button onclick="recStations()">Recommend Route</button>
-
-    </div>
-
-
-    <div id="map" style="height: 800px"></div>
+    <div id="map" style="height: 592px"></div>
 
     </div>
 
@@ -108,10 +85,43 @@ Let our recommender system make life a little easier for you!<br><br>
 
 <script>
 
+// function to make time dropdown contain only present and future hours
+function timeChange() {
+  var d1 = new Date();
+  var hourNow = d1.getHours();
+  var daySelected = document.getElementById("day_select").value;
+  var outHours = "";
+
+  // if the day is today, check the hour and fill in time dropdown appropriately
+  if (daySelected == 0) {
+    if (hourNow >= 6) {
+      for (var i=hourNow; i<24; i++) {
+        outHours += "<option value='" + i + "'>" + i + ":00</option>";
+      }
+    } else {
+      for (var j=6; j<24; j++) {
+        outHours += "<option value='" + j + "'>" + j + ":00</option>";
+      }
+    }
+
+  // if the day is tomorrow, fill in time dropdown fully
+  } else {
+    for (var j=6; j<24; j++) {
+        outHours += "<option value='" + j + "'>" + j + ":00</option>";
+    }
+  }
+  document.getElementById("time_select").innerHTML = outHours;
+}
+
+timeChange();
+
+
+
 function loadFunction() {
   alert("Page is loaded");
 }
 
+// defining global variables for the various functions below which share them
 let map;
 let markerArray = [];
 let closestFive = [];
@@ -125,9 +135,10 @@ let directionsService;
 let directionsRenderer;
 
 
-
+// gets called when page loads
 function initMap() {
 
+  // variables to retrieve and render directions from the API
   directionsService = new google.maps.DirectionsService;
   directionsRenderer = new google.maps.DirectionsRenderer;
 
@@ -137,6 +148,7 @@ function initMap() {
       }).then(data => {
       console.log("data ", data);
 
+  // setting the map
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 53.349804, lng: -6.260310 },
     zoom: 13,
@@ -169,7 +181,7 @@ function initMap() {
     }
   });
 
-
+  // called when the stations dropdowns are changed, displays the directions between the selected stations
   var onChange = function() {
     displayRoute(directionsService, directionsRenderer);
   };
@@ -194,6 +206,7 @@ function initMap() {
     const marker = new google.maps.Marker({
       position: { lat: parseFloat(station.latitude), lng: parseFloat(station.longitude) },
       map: map,
+      icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
     });
     });
 
@@ -213,14 +226,19 @@ function resetMarkers() {
 }
 
 
-// function to calculate the recommended stations
+// function to calculate the recommended route and display it on the map
 function recStations() {
+
+// nothing happens unless two markers are placed by the user
+if (markerArray.length == 2) {
   var count = 0;
 
+  // setting up input variables for the models
   var d = new Date();
   var dayIn = (parseInt(document.getElementById("day_select").value) + d.getDay() + 6) % 7;
   var hourIn = parseInt(document.getElementById("time_select").value);
 
+  // resetting variables for the calculations
   var allMarks = [];
   var allStatNums = [];
   chosenStations = [];
@@ -251,11 +269,13 @@ function recStations() {
     var closestDists = [];
     var allDists = [];
 
+    // calculating the distance between the selected marker and each station marker
     for (var j=0; j<allMarks.length; j++) {
       var dist = google.maps.geometry.spherical.computeDistanceBetween(markerArray[0].position, allMarks[j].position);
       allDists.push(dist);
     }
 
+    // determining the closest five stations to the selected marker
     for (var h=0; h<5; h++) {
       closestFive.push(allMarks[h]);
       closestFiveStatNums.push(allStatNums[h]);
@@ -279,11 +299,13 @@ function recStations() {
     var closestDists2 = [];
     var allDists2 = [];
 
+    // calculating the distance between the selected marker and each station marker
     for (var j=0; j<allMarks.length; j++) {
       var dist2 = google.maps.geometry.spherical.computeDistanceBetween(markerArray[1].position, allMarks[j].position);
       allDists2.push(dist2);
     }
 
+    // determining the closest five stations to the selected marker
     for (var h=0; h<5; h++) {
       closestFive2.push(allMarks[h]);
       closestFiveStatNums2.push(allStatNums[h]);
@@ -300,7 +322,7 @@ function recStations() {
       }
     }
 
-
+    // calling async function to fetch the predicted numbers from the model and return the indexes of the best stations
     fetchPredBikes(closestFiveStatNums, closestFiveStatNums2, dayIn, hourIn).then(ans => {
       chosenStat = closestFive[ans[0]];
       chosenStat2 = closestFive2[ans[1]];
@@ -314,10 +336,12 @@ function recStations() {
     count++;
   });
 }
+}
 
 
-// async function to get predicted bikes and stands, return numbers for largest
+// async function to get predicted bikes and stands, return indexes for largest predicted bikes/stands
 async function fetchPredBikes(numArray, numArray2, day, hour) {
+  // fetching all of the predicted numbers at the same time and waiting for the promise back
   const [first, second, third, fourth, fifth, first2, second2, third2, fourth2, fifth2] = await Promise.all([
     fetch("/predictBikes/" + numArray[0] + "/" + day + "/" + hour),
     fetch("/predictBikes/" + numArray[1] + "/" + day + "/" + hour),
@@ -330,6 +354,8 @@ async function fetchPredBikes(numArray, numArray2, day, hour) {
     fetch("/predictStands/" + numArray2[3] + "/" + day + "/" + hour),
     fetch("/predictStands/" + numArray2[4] + "/" + day + "/" + hour),
   ]);
+
+  // pulling the numbers from the response
   const firstNum = await first.text();
   const secondNum = await second.text();
   const thirdNum = await third.text();
@@ -341,9 +367,11 @@ async function fetchPredBikes(numArray, numArray2, day, hour) {
   const fourthNum2 = await fourth2.text();
   const fifthNum2 = await fifth2.text();
 
+  // parsing the numbers and storing them in arrays
   const predArray = [parseFloat(firstNum), parseFloat(secondNum), parseFloat(thirdNum), parseFloat(fourthNum), parseFloat(fifthNum)];
   const predArray2 = [parseFloat(firstNum2), parseFloat(secondNum2), parseFloat(thirdNum2), parseFloat(fourthNum2), parseFloat(fifthNum2)];
 
+  // determining the largest prediction numbers
   var largestIndex = 0;
   for (var q=0; q<5; q++) {
     if (predArray[q]>predArray[largestIndex]) {
@@ -356,6 +384,7 @@ async function fetchPredBikes(numArray, numArray2, day, hour) {
       largestIndex2 = p;
     }
   }
+  // returning the indexes of the largest numbers
   var outArray = [largestIndex, largestIndex2];
   return outArray;
 }

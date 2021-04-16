@@ -10,7 +10,7 @@
 
     <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Space+Grotesk:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Space+Grotesk:wght@300&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -22,10 +22,6 @@
       // Set a callback to run when the Google Visualization API is loaded.
       google.charts.setOnLoadCallback(initMap);
         }
-
-
-
-
     </script>
 </head>
 <body>
@@ -40,9 +36,6 @@
       <a id="homelink" href="{{ url_for('homepage') }}">Home</a>
     </div>
 
-  <!--  <div id="infonav">
-      <a id="infolink" href="{{ url_for('info_page') }}">Stations</a>
-    </div>-->
 
     <div id="routenav">
       <a id="routelink" href="{{ url_for('route_planner') }}">Start your journey</a>
@@ -53,31 +46,21 @@
         <div class="weather_widget">
         <div id="description"></div>
         <h1 id="temp"></h1>
-    <!--
-        <div id="location"></div>
-    -->
+
             <div id="icon"></div>
         </div>
 
 
-  <div class="select_instruct">
-<!--
-      <h3>Select a station to view <br>bike and stand <br>availability:</h3>
--->
+    <div class="select_instruct">
       <h3>Current bike & stand availability:</h3>
       <h2>Select a station to view average availability by day/time.</h2>
-  </div>
-
-         </div>
-
-
-
-
+    </div>
+    </div>
 
 </div>
 
 <div id="charts_div" style="display:none">
-    <div id="chartExplainer" style="display:none"> </div>
+    <div id = 'stationNameDiv'></div>
       <div id="charts" style="display:none">
         <div id="chart1"><canvas id="canvasWeek"></canvas></div>
         <div id="chart2"> <canvas id="canvasHour"></canvas></div>
@@ -88,14 +71,7 @@
 
 
 
-
-
-
-
 <script>
-
-
-
 //WEATHER WIDGET
 
 //Reference: https://codepen.io/mattfroese/pen/WaeYQV
@@ -112,12 +88,11 @@ function weatherBallon( cityID ) {
 	.catch(function() {
 		// catch any errors
 	});
-
-
 }
+
 function drawWeather( d ) {
   var celcius = Math.round(parseFloat(d.main.temp)-273.15);
-	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+  var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
   var description = d.weather[0].description;
   var icon_var = d.weather[0].icon;
   var icon = 'http://openweathermap.org/img/w/'+icon_var+'.png'
@@ -143,12 +118,7 @@ window.onload = function() {
 	weatherBallon( 2964574 );
 }
 
-
-
-
 //MAP
-
-
 let map;
 
 function initMap() {
@@ -165,7 +135,6 @@ function initMap() {
       }).then(bikeData => {
       console.log("bikeData ", bikeData);
 
-
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 53.349804, lng: -6.260310 },
     zoom: 14,
@@ -175,23 +144,20 @@ function initMap() {
   data.forEach(station => {
 
     var contentString;
-
     var stationData;
 
     // iterating over the availability data and building the content for the info window
     bikeData.forEach(bikeStation => {
       if (station.name == bikeStation.StationName) {
         stationData = bikeStation;
-        contentString = `${bikeStation.StationName} Avail Stands: ${bikeStation.AvailableBikeStands} Avail Bikes: ${bikeStation.AvailableBikes}`;
+        contentString = `${bikeStation.StationName} <br> Available Stands: ${bikeStation.AvailableBikeStands} <br>Available Bikes: ${bikeStation.AvailableBikes}`;
         }
       });
 
     // Default marker color orange
     var color = "ff8872";
 
-
-
-    // make colour of the marker green
+    // Assign colours to map markers based on available bikes
     if (stationData["AvailableBikes"] > 10) {
         color = "D0E6A5";
         // make colour of the marker grey
@@ -221,11 +187,11 @@ function initMap() {
     marker.addListener("click", () => {
       infowindow.open(map, marker);
         chartWeekly(station.number);
-        console.log('now to chart hourly with' + station.number);
         chartHourly(station.number);
+        document.getElementById('stationNameDiv').innerHTML = station.name;
 
     //make divs visible
-    document.getElementById( 'chartExplainer' ).style.display = 'block';
+    document.getElementById( 'stationNameDiv' ).style.display = 'block';
 
     });
   });
@@ -237,7 +203,7 @@ function initMap() {
 }
 
 function getDayString(number){
-
+    //Returns day of week string from number value
         var DaysOfWeek = new Array(7);
         DaysOfWeek[0] = "Sunday";
         DaysOfWeek[1] = "Monday";
@@ -256,25 +222,33 @@ function chartWeekly(StationNumber){
     fetch("/chartW/" + StationNumber).then(response => {
         return response.json();
     }).then(data =>{
-            console.log(data);
+            console.log("ChartW" + data);
 
-        // Chartist
         // Set up lists to capture bikes & days
-        var days = [];
+        var dayList = [];
         var bikes = [];
         data.forEach(x => {
-            days.push(x.DayOfWeek);
-            bikes.push(x.AvailableBikes);
-        })
-        // Get the string for each day from its int value
+        dayList.push(x.DayOfWeek);
+                bikes.push(x.AvailableBikes);
+            })
+
+        console.log("Daylist" + dayList);
+        days = dayList.slice(0, 7);
+        // Get the day string for each day of the week from its int value
         days.forEach((value, index) => {
             days[index] = getDayString(value);
         })
         console.log(days);
         console.log(bikes);
         // Draw chart
-        var ctx = document.getElementById("canvasHour").getContext('2d');
-        var canvas = new Chart(ctx, {
+        var ctx = document.getElementById("canvasWeek").getContext('2d');
+        
+        // If global variable chart already exists, destroy so we can create a new one
+        if (window.canvasWeekX){
+            window.canvasWeekX.destroy();
+        }
+        
+        window.canvasWeekX = new Chart(ctx, {
             type: 'bar',
 
             data: {
@@ -288,11 +262,40 @@ function chartWeekly(StationNumber){
             },
 
             options: {
+                title : {
+                        display: true,
+                        text: 'Daily Average Bike Availability',
+                        fontColor: 'rgb(29, 176, 229)',
+                    },
+                scales : {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Day of Week',
+                            fontColor: 'rgb(255, 255, 255)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: 'orange',
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Available Bikes',
+                            fontColor: 'rgb(255, 255, 255)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: 'orange',
+                        }
+                    }],
+                    
+                },
                 legend: {
-                    display: true,
-                    labels: {
-                        fontColor: 'rgb(109, 28, 169)'
-                    }
+                    display: false,
                 }
             }
 
@@ -309,7 +312,7 @@ function chartHourly(StationNumber){
     }).then(data =>{
             console.log(data);
 
-        // Chartist
+        // Begin to organize variables for charting
         var today = new Date();
         var todayNum = today.getDay();
         //Calls getDayString to return word for day of week
@@ -320,27 +323,34 @@ function chartHourly(StationNumber){
         var lateHours = [];
         var earlyHours = [];
         var lateBikes = [];
-        var earlyBikes = []
+        var earlyBikes = [];
         data.forEach(x => {
          if (x.Hour <= 1){
              earlyHours.push(x.Hour);
              earlyBikes.push(x.AvailableBikes);
         }else if (x.Hour > 1 && x.Hour < 6){
             }
-            //pass
-            else{
+            // Pass: Do not attempt to enter values into array that we have not collected in our downtime between 1-6am
+         else{
             lateHours.push(x.Hour);
             lateBikes.push(x.AvailableBikes);
             }
         })
+
         // finalize variables into hours and bikes in right order
         var hours = lateHours.concat(earlyHours);
         var bikes = lateBikes.concat(earlyBikes);
         console.log(hours);
         console.log(bikes);
-        // Chartist draw
-        var ctx = document.getElementById("canvasWeek").getContext('2d');
-        var canvas = new Chart(ctx, {
+
+        // Refreshes the chart if the function has been called before
+        if (window.canvasHourX){
+            window.canvasHourX.destroy();
+        }
+        
+        // Draw Chart
+        var ctx = document.getElementById("canvasHour").getContext('2d');
+        window.canvasHourX = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: hours,
@@ -353,46 +363,47 @@ function chartHourly(StationNumber){
             },
 
             options: {
-
+                title : {
+                        display: true,
+                        text: "Today's Average Bike Availability",
+                        fontColor: 'rgb(29,176,229)'
+                    },
+                scales : {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Hour of Day',
+                            fontColor: 'rgb(255, 255, 255)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: 'orange',
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Available Bikes',
+                            fontColor: 'rgb(255, 255, 255)',
+                        },
+                        ticks:{
+                            fontStyle: 'bold',
+                            fontColor: 'orange',
+                        }
+                    }],
+                    
+                },
                 legend: {
-                    display: true,
-                    labels: {
-                        fontColor: 'rgb(109, 28, 169)'
-                    }
+                    display: false,
                 }
             }
 
         });
 
-        var now = new Date();
-        var currentHour = now.getHours()
-        var sum = 0;
-        var soonList = [];
-        data.forEach(x =>{
-            if (x.Hour == currentHour || x.Hour ==currentHour + 1){
-                sum += x.AvailableBikes;
-                soonList.push(x.AvailableBikes);
-            }
-        })
-        console.log(average);
-        console.log(sum);
-
-
-        var average = Math.round(sum/2);
-        var chartExplainer = document.getElementById("chartExplainer");
-
-        while (chartExplainer.firstChild){
-            chartExplainer.removeChild(chartExplainer.firstChild);
-        }
-        chartExplainer.textContent += "On average, there's usually " + average + " bikes available at your selected station at this time!"
-        if (soonList[0] > soonList[1] && soonList[1] < 4){
-            chartExplainer.textContent += "You might want to consider a nearby stand instead, as the number of bikes here is usually quite low within the next hour"
-        }
-
-
         //Display nivs
         document.getElementById("charts_div").style.display='block';
-        document.getElementById("chartExplainer").style.display='block';
         document.getElementById("charts").style.display='block';
     });
 
@@ -404,8 +415,6 @@ function chartHourly(StationNumber){
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNMDKUUBsPVblrArwU5AIKEt8ZirRosf4&callback=initCharts&libraries=&v=weekly"
       async>
 </script>
-
-
 
 
 </body>

@@ -3,6 +3,7 @@ import requests
 import json
 from datetime import datetime
 
+#Connect to Database
 try:
     print("trying to connect")
     mydb = mysql.connector.connect(
@@ -22,11 +23,13 @@ try:
 
     r = requests.get(STATIONS, params={"apiKey": APIKEY, "contract": NAME})
 
+# Use same time value for all entries in database
     now = datetime.now()
     current_time = now.strftime("%H%M") #time as a 3-4 sequence of numbers
     day = datetime.today().weekday() #produces an int value for day of the week
     date = now.strftime("%Y-%m-%d") #probably not going to be used computationally, just for our benefit
 
+# Add bike data into long-term repository
     def live_to_historical(text):
         stations = json.loads(text)
         for station in stations:
@@ -39,6 +42,7 @@ try:
             mydb.commit()
         return
 
+# Replace bike data in live table
     def replace_live_data(text):
         mycursor.execute("truncate table AvailableBikes")
         mydb.commit()

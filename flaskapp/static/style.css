@@ -16,7 +16,6 @@ body {
   color:black;
 }
 
-
 .body{
     background-image: url("/static/images/body_background.png");
     font-family: 'Lato', sans-serif;;
@@ -26,21 +25,11 @@ body {
     margin-left:13%;
 }
 
-/*#navigation {
-    background-color: #166974;
-    padding: 4rem 0 4rem 0;
-    height: auto;
-    width: 100%;
-    color:white;
-}*/
 
 #logo{
     margin-left:2rem;
     padding: 3rem 3rem 3rem 0;;
     height: 6rem;
-/*
-    width: 15%;
-*/
     margin: -2rem 0 0 2rem;
 }
 
@@ -59,7 +48,6 @@ body {
 
 #routelink {
     color:grey;
-    font-border:#34166d;
     font-size: 1rem;
     text-decoration: none;
 }
@@ -71,19 +59,9 @@ body {
 }
 
 
-/*#homelink > a,
-#infolink > a,
-/*#routelink > a{
-    color:white;
-    text-decoration: none;
-}*/
-
 #homenav > a:hover, #infonav > a:hover, #routenav > a:hover{
     color:#ff9632;
-}*/
-
-
-
+}
 
 
 /* HEADER */
@@ -112,8 +90,6 @@ body {
   height:50rem;
 }
 
-
-
 /* Clear floats after the columns */
 .row{
      display: flex;
@@ -124,15 +100,13 @@ body {
 
 .column_smaller{
     height:50%;
-    }
+}
 
 .column_larger{
     height:50%;
-    }
-
+}
 
 /* TEXT INSIDE COLUMNS */
-
 .column_smaller_textbox>h2{
     /*background-color:blue;*/
     color:dark-grey;
@@ -149,25 +123,18 @@ body {
     font-size: 500%;
 }
 
-
 .column_larger_textbox>img{
     margin-top: 5rem;
     max-width:100%
 
 }
 
-
-
 header {
     height: 600px;
     width: 100%;
-
     background: black;
     overflow: hidden;
     background: #C33764;  /* fallback colour. Make sure this is just one solid colour. */
-/*
-    background: -webkit-linear-gradient(rgba(2, 0, 36, 100), rgba(0, 212, 255, 100)), url('images/dimitry-anikin-XI1yvtqKjl8-unsplash_cropped.jpg');
-*/
     background: linear-gradient(rgba(0, 212, 255, 0.2), rgba(2, 0, 36, 0.8)), url('images/dimitry-anikin-XI1yvtqKjl8-unsplash_cropped.jpg'); }
 
 
@@ -178,18 +145,12 @@ header {
     font-size: 2rem;
 }
 
-
 #select_instruct{
-    margin: 3rem;
+    margin: 3rem 3rem 0rem 2rem;
     width: 90%;
     padding:1rem 1rem 0.5rem 1rem;
     font-size: 2rem;
     color: black;
-/*
-    background-color:#b2b2b0;
-*/
-    /*opacity: 0.5;*/
-
 }
 
 .select_instruct>h3{
@@ -198,64 +159,46 @@ header {
     padding:1rem 1rem 0.5rem 1rem;
     font-size: 2rem;
     color: white;
-/*
-    background-color:#b2b2b0;
-*/
-    /*opacity: 0.5;*/
-
 }
 
-
 select_instruct>h2{
-    margin-left:2rem;
+    margin-left:0rem;
 }
 
 .h3{
     color: black;
     opacity: 1;
 }
-#charts_div{
-/*    background-color: red;*/
 
+/*CHARTS*/
+#charts_div{
+float: left;
+width: 30%;
+    margin-left: 1rem;
+    margin-bottom: .5rem;
+    margin-right: 1rem;
+    border-radius:.2rem;
 }
 
-#chartExplainer{
-    background-color: rgba(80, 15, 158, 0.8);
-/*
-    display: none;
-*/
-    width: 30%;
-    margin: 2rem 0 1rem 13%;
-    padding: 2rem;
+#stationNameDiv{
+    background-color: rgba(80, 15, 158, 0.5);
+    border-radius: .2rem;
+    text-align: center;
+    font-weight: bold;
+    padding: .5rem 0rem .5rem 0rem;
+    margin: 1rem;
     font-size:1.5rem;
     color:orange;
-    margin-right:0;
+    float: center;
+    border-radius: .2rem;
 }
+
 
 #charts{
-    width:30%;
-    float:right;
-    margin-right:2rem;
+    float:center;
+    background-color: rgba(80, 15, 158, 0.5);
+    border-radius: .2rem;
 }
-
-/*#canvasHour{
-    display: none;
-}
-
-#canvasWeek{
-    display: none;
-}*/
-
-/*#chart1{
-    width:50%;
-    float: left;
-}
-
-#chart2{
-    width:50%;
-    float: right;
-}*/
-
 
 /* BUTTONS */
 .primary_button{
@@ -301,18 +244,18 @@ select_instruct>h2{
     color:grey;
 
 }
-
-
 .buttons{
     border-radius: 90%;
 
 }
-
-
+/* MAP */
 #map {
-  height: 60%;
-  width: 86%;
-  margin: 0rem 3rem 3rem 13%;
+  height: 50%;
+  float: right;
+  width: 50%;
+    margin-top: 50px;
+  margin-right; 50px;
+    margin-bottom: .5rem;
   border: 6px solid z;
   box-shadow:
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),
@@ -325,9 +268,11 @@ select_instruct>h2{
 }
 
 .wrapper{
-    margin-bottom:200px;
+    margin-bottom:3rem;
 
 }
+
+/* WEATHER */
 .weather_widget{
     float:right;
     postion:block;
@@ -352,45 +297,8 @@ select_instruct>h2{
     margin-right:400px;
 }
 
+/* FOOTER */
 footer{
     background-color:#3e4cb5;
     margin-bottom:0rem;
 }
-
-
-
-/*#homenav {
-  height: 5%;
-  width: 10%;
-  border: 6px solid #FF5A5F;
-  font-size: 150%;
-  margin: 1%;
-}
-
-#routenav {
-  height: 5%;
-  width: 10%;
-  border: 6px solid #5398BE;
-  font-size: 150%;
-  margin: 1%;
-}*/
-
-/*#homenav:hover,
-#routenav:hover,
-a:hover {
-  background-color: lightgray;
-}
-
-a {
-  height: 100%;
-  width: 100%;
-  padding: 2%;
-}
-
-#homelink {
-  color: #FF5A5F;
-}
-
-#routelink {
-  color: #5398BE;
-}*/
