@@ -225,12 +225,15 @@ function chartWeekly(StationNumber){
             console.log("ChartW" + data);
 
         // Set up lists to capture bikes & days
-        var days = [];
+        var dayList = [];
         var bikes = [];
         data.forEach(x => {
-            days.push(x.DayOfWeek);
-            bikes.push(x.AvailableBikes);
-        })
+        dayList.push(x.DayOfWeek);
+                bikes.push(x.AvailableBikes);
+            })
+
+        console.log("Daylist" + dayList);
+        days = dayList.slice(0, 7);
         // Get the day string for each day of the week from its int value
         days.forEach((value, index) => {
             days[index] = getDayString(value);
