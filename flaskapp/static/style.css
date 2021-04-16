@@ -197,6 +197,7 @@ width: 30%;
 #charts{
     float:center;
     background-color: rgba(80, 15, 158, 0.5);
+    border-radius: .2rem;
 }
 
 /* BUTTONS */
@@ -249,7 +250,7 @@ width: 30%;
 }
 /* MAP */
 #map {
-  height: 60%;
+  height: 50%;
   float: right;
   width: 50%;
     margin-top: 50px;
